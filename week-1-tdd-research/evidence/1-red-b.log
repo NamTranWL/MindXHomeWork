@@ -1,0 +1,38 @@
+
+ RUN  v2.1.8 <Week_1>
+
+ ❯ parallel-tests/unit/coverageSummary.test.ts (2 tests | 1 failed) 15ms
+   × summarizeCoverage – tổng hợp thiếu người trong tuần > cộng dồn số người còn thiếu và đếm buổi chưa được bù đủ 12ms
+     → expected { halfDaysWithLeave: 3, …(2) } to deeply equal { halfDaysWithLeave: 3, …(2) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  parallel-tests/unit/coverageSummary.test.ts > summarizeCoverage – tổng hợp thiếu người trong tuần > cộng dồn số người còn thiếu và đếm buổi chưa được bù đủ
+AssertionError: expected { halfDaysWithLeave: 3, …(2) } to deeply equal { halfDaysWithLeave: 3, …(2) }
+
+- Expected
++ Received
+
+  Object {
+    "halfDaysWithLeave": 3,
+-   "missingPeople": 2,
+-   "uncoveredHalfDays": 2,
++   "missingPeople": 0,
++   "uncoveredHalfDays": 0,
+  }
+
+ ❯ parallel-tests/unit/coverageSummary.test.ts:29:37
+     27|       row({ date: '2026-10-13', absent: ['Hung'], coveredBy: null, mis…
+     28|     ];
+     29|     expect(summarizeCoverage(rows)).toEqual({ halfDaysWithLeave: 3, un…
+       |                                     ^
+     30|   });
+     31| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  13:13:56
+   Duration  896ms (transform 62ms, setup 202ms, collect 31ms, tests 15ms, environment 430ms, prepare 66ms)
+

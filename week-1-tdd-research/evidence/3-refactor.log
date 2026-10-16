@@ -1,0 +1,13 @@
+
+ RUN  v2.1.8 <Week_1>
+
+ ✓ parallel-tests/integration/LeaveModal.test.tsx (19 tests) 2076ms
+   ✓ <LeaveModal /> – grid layout > every staff member has a Morning and an Afternoon cell for every day (4 staff × 7 days × 2 = 56) 354ms
+ ✓ parallel-tests/unit/leaveLogic.test.ts (32 tests) 15ms
+ ✓ parallel-tests/unit/coverageSummary.test.ts (2 tests) 4ms
+
+ Test Files  3 passed (3)
+      Tests  53 passed (53)
+   Start at  13:14:07
+   Duration  4.56s (transform 135ms, setup 445ms, collect 198ms, tests 2.09s, environment 1.21s, prepare 194ms)
+

@@ -1,0 +1,10 @@
+
+ RUN  v2.1.8 <Week_1>
+
+ ✓ parallel-tests/unit/coverageSummary.test.ts (2 tests) 3ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  13:14:05
+   Duration  820ms (transform 69ms, setup 164ms, collect 27ms, tests 3ms, environment 413ms, prepare 74ms)
+
