@@ -13,6 +13,11 @@ function mockLeaveApi(): Plugin {
   return {
     name: 'mock-leave-api',
     configureServer(server) {
+      // Health check: Playwright's webServer waits for THIS url, so an unrelated app on the same port never passes.
+      server.middlewares.use('/__week1-demo-health', (_req: IncomingMessage, res: ServerResponse) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ app: 'week1-leave-standby', ok: true }));
+      });
       server.middlewares.use('/api/leave-week', (req: IncomingMessage, res: ServerResponse) => {
         if (req.method === 'GET') {
           res.setHeader('Content-Type', 'application/json');
@@ -37,7 +42,12 @@ function mockLeaveApi(): Plugin {
   };
 }
 
+/** Single source of truth for the demo address (also used by parallel-tests/playwright.config.ts). */
+export const DEMO_HOST = '127.0.0.1';
+export const DEMO_PORT = 4317;
+
 export default defineConfig({
   plugins: [react(), mockLeaveApi()],
-  server: { port: 3000, strictPort: true },
+  // strictPort: if 4317 is busy Vite fails loudly instead of silently moving to another port.
+  server: { host: DEMO_HOST, port: DEMO_PORT, strictPort: true },
 });

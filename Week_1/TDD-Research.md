@@ -36,7 +36,7 @@ Ba luật của Kent Beck / Uncle Bob:
 | **Integration** | Nhiều phần chạy cùng nhau: component + state + API (mock) | React Testing Library, Supertest | Render `<LeaveModal />`, click ô → hiện badge "Leave", bảng tự cập nhật |
 | **E2E** | Toàn bộ app trong trình duyệt thật, như người dùng | Playwright, Cypress | Mở màn Scheduling → bấm khoa → sửa → Save → kiểm payload gửi đi |
 
-Nguyên tắc chia: luật nghiệp vụ càng nhiều nhánh thì càng nên nằm ở **unit** (nhanh, chỉ đúng chỗ sai). Integration kiểm việc "nối dây". E2E chỉ giữ vài luồng quan trọng nhất vì chậm và dễ chập chờn. Trong bài: **32 unit · 19 integration · 4 E2E**.
+Nguyên tắc chia: luật nghiệp vụ càng nhiều nhánh thì càng nên nằm ở **unit** (nhanh, chỉ đúng chỗ sai). Integration kiểm việc "nối dây". E2E chỉ giữ vài luồng quan trọng nhất vì chậm và dễ chập chờn. Trong bài: **34 unit · 19 integration · 4 E2E**.
 
 ## 3. Test giúp kiểm soát code do AI sinh ra
 
@@ -51,13 +51,22 @@ AI viết code nhanh nhưng có thể **tự tin mà sai**: hiểu sai yêu cầ
 5. **Guardrails** khi giao việc cho AI: cấm `setTimeout`/sleep (chống flaky), cấm gọi endpoint thật, bắt so khớp **chính xác** câu lỗi, tìm phần tử theo role/tên thay vì CSS.
 
 **Đã áp dụng trong bài:**
-- Chạy `npm test` trên thư mục chưa có `src/` → 2 file đỏ vì `Failed to resolve import "../../src/leave/leaveLogic"` (đúng pha Red).
-- Viết một bản cài đặt tham chiếu tạm (không nộp) → **51/51** test Vitest và **4/4** test Playwright xanh, chạy lặp 5 lần × 4 luồng song song vẫn **20/20** xanh (không flaky). Vậy bộ test là khả thi, không đòi điều mâu thuẫn.
+- Chạy `npm test` trên thư mục chưa có `src/` → 2 file đỏ vì `Failed to resolve import "../../src/leave/leaveLogic"`. Lưu ý: đây là Red do **thiếu module**, chỉ chứng minh code chưa tồn tại, chưa chứng minh test đo đúng hành vi. Vì vậy có thêm một vòng TDD theo hành vi ở mục 7.
+- Viết một bản cài đặt tham chiếu tạm (không nộp) → **51/51** test Vitest (nay là 53/53 sau khi thêm `summarizeCoverage`) và **4/4** test Playwright xanh, chạy lặp 5 lần × 4 luồng song song vẫn **20/20** xanh (không flaky). Vậy bộ test là khả thi, không đòi điều mâu thuẫn.
 - Mutation:
   - Bỏ luật "1 người dự phòng/ngày" → **1** test đỏ.
   - Đổi đầu tuần từ Thứ 6 sang Thứ 2 → **11** test đỏ.
 
   Test bắt được lỗi thật.
+
+## 3b. Bốn lỗi testing thường gặp (và cách bài này tránh)
+
+| Lỗi | Ví dụ cụ thể | Hậu quả | Cách tránh (áp dụng trong bài) |
+|---|---|---|---|
+| **Over-testing** | Viết E2E cho từng biến thể ngày trong tuần (T6, T7, CN…) thay vì unit | Suite chậm, dễ flaky, một thay đổi UI làm đỏ hàng chục test | Biến thể nghiệp vụ nằm ở unit (`it.each` 6 ngày trong `leaveLogic.test.ts`, chạy vài ms). E2E chỉ giữ **4** hành trình chính |
+| **Weak assertions** | `expect(rows.length).toBeGreaterThan(0)` hoặc `expect(screen.getByText(/error/i))` | Code sai vẫn xanh ("xanh giả"); mutation không bị bắt | So khớp **toàn bộ** object bằng `toEqual`, câu lỗi đúng từng chữ, payload Save kiểm bằng schema `zod`. Mutation check ở mục 3 và mục 7 chứng minh test đỏ khi code bị làm hỏng |
+| **Testing implementation details** | Tìm ô bằng `.leave-cell.active`, kiểm `useState` được gọi, mock `buildAssigneeChanges` trong test của modal | Refactor (đổi tên class, tách component) làm đỏ test dù hành vi không đổi | Tìm phần tử theo **role + accessible name** (Testing Library). Chỉ mock ranh giới mạng (`leaveApi`), không mock logic nội bộ. Kết quả: tách `LeaveGrid`/`AssigneeChangesTable` ở pha Refactor mà không sửa dòng test nào |
+| **Blind trust in AI** | AI nói "đã sửa xong, test pass" nhưng không chạy; hoặc AI sửa expected trong test cho khớp code sai | Lỗi lọt vào bài nộp; test mất vai trò hợp đồng | AI không được sửa test. Luôn **tự chạy** `npm test` và đọc output; dùng mutation check để kiểm chính test. Phân biệt rõ "AI tự xác nhận" với "kiểm chứng độc lập" (mục 6) |
 
 ## 4. Test cho ứng dụng dòng lệnh (CLI)
 
@@ -135,6 +144,21 @@ describe('errors', () => {
 });
 ```
 
+### 4.1. Áp vào Ticket Manager (chuẩn bị Week 2)
+
+Chưa xây CLI, chỉ đặc tả test case. Giả định CLI `tickets` lưu dữ liệu vào file JSON chỉ định bằng biến `TICKETS_FILE` (mỗi test một thư mục tạm, như ví dụ `todo` ở trên).
+
+| # | Input | Expected | Tầng test |
+|---|---|---|---|
+| 1 | `tickets create --title "Login lỗi 500" --priority high` (file chưa tồn tại) | exit 0; stdout `Created ticket #1`; file JSON có `{ id: 1, title: "Login lỗi 500", status: "open", priority: "high" }` | CLI integration (subprocess + file tạm). Luật mặc định `status = open` thêm unit test cho hàm `createTicket` |
+| 2 | `tickets create --priority high` (thiếu `--title`) | exit 2; stderr `Error: --title is required`; stdout rỗng; file không bị tạo/đổi | Unit (validate) + 1 CLI test cho exit code/stderr |
+| 3 | Có 3 ticket (open/high, open/low, closed/high) → `tickets list --status open --priority high` | exit 0; chỉ in ticket #1; không in 2 ticket còn lại | Unit cho hàm lọc (`filterTickets`), 1 CLI test cho cách parse cờ |
+| 4 | `tickets show 99` (ID không tồn tại) | exit 1; stderr `Error: ticket #99 not found`; không in stack trace | CLI integration |
+| 5 | `tickets update 1 --status done` (trạng thái hợp lệ chỉ `open \| in-progress \| closed`) | exit 2; stderr `Error: invalid status "done". Allowed: open, in-progress, closed`; ticket #1 giữ nguyên trong file | Unit (validate status) + CLI kiểm dữ liệu không đổi |
+| 6 | File `tickets.json` chứa `{not json` → `tickets list` | exit 1; stderr `Error: cannot read <file> (invalid JSON)`; **file giữ nguyên nội dung** (không bị ghi đè) | CLI integration (file storage) |
+
+Nguyên tắc chia tầng giống bài Leave & Standby: luật (validate, lọc, mặc định) ở unit; CLI test chỉ kiểm phần "nối dây": parse tham số, stdout/stderr, exit code, đọc/ghi file.
+
 ## 5. Bài thực hành: Leave & Standby Modal
 
 Viết **chỉ test** (pha Red) cho tính năng: bấm "Geriatrics Department" trên màn Scheduling mở modal gồm:
@@ -146,13 +170,65 @@ Tiến trình:
 
 1. **Red:** viết test trước, chạy thấy đỏ vì chưa có `src/leave/*`.
 2. **Green:** viết `src/leave/*` cho tới khi 51 + 4 test xanh. Không sửa dòng test nào.
+   Do commit `9a5ac3b` gộp test + code + docs, Git không thể hiện thứ tự Red → Green. Minh chứng thứ tự theo hành vi xem mục 7.
 3. **Refactor:** tách component và hàm thuần, test vẫn xanh.
 
-App demo: `npm run dev` → `http://localhost:4317/schedule?date=2026-10-12`, dùng API giả trong bộ nhớ. Chi tiết và cách chạy: `parallel-tests/README.md`.
+App demo: `npm run dev` → `http://127.0.0.1:4317/schedule?date=2026-10-12` (cổng cố định trong `vite.config.ts`, Playwright dùng cùng địa chỉ), dùng API giả trong bộ nhớ. Chi tiết và cách chạy: `parallel-tests/README.md`.
+
+## 6. Ba AI workflow đã dùng và cách tự xác minh
+
+Phân biệt hai loại xác minh:
+- **AI tự xác nhận:** AI trả lời "đúng rồi", "test sẽ pass". Chỉ là ý kiến, không tính là bằng chứng.
+- **Kiểm chứng độc lập:** chạy test và đọc output, đối chiếu nguồn chính thức (docs Vitest/Playwright/Testing Library, sách Kent Beck), mutation check.
+
+> Các ô "Trích đoạn" là chỗ dán 1–2 câu chat thật (không cần dán cả hội thoại). Phần log/test đã có thật trong repo.
+
+### 6.1. Layered Questioning: research → brief → ví dụ → validation
+
+| Lớp | Câu hỏi cho AI | Kết quả dùng trong bài | Kiểm chứng độc lập |
+|---|---|---|---|
+| Research | "TDD là gì, Red-Green-Refactor gồm những pha nào, testing pyramid chia tầng thế nào?" | Mục 1, 2 | Đối chiếu Martin Fowler (TDD, Test Pyramid), Kent Beck *TDD by Example* |
+| Brief | "Tóm tắt thành bảng: mỗi pha làm gì, dấu hiệu xong" | Bảng pha ở mục 1 | Tự kiểm: bảng có khớp 3 luật của Beck không |
+| Ví dụ | "Cho ví dụ test CLI có file storage, exit code, stderr" | Ví dụ `todo` và bảng Ticket Manager ở mục 4 | Đọc lại từng assertion: có kiểm stderr tách khỏi stdout, file không bị ghi đè không |
+| Validation | "Làm sao biết bộ test này đủ chặt?" | Mutation check (mục 3, 7) | **Chạy thật**: đổi `> 0` thành `>= 0` → test đỏ ([evidence/4-mutation.log](evidence/4-mutation.log)) |
+
+Trích đoạn:https://drive.google.com/file/d/1Bu2nqIYWyZsZr5NvMoGHfZUDs7EzWYTJ/view?usp=sharing
+### 6.2. Solution Exploration: so sánh ít nhất hai lựa chọn
+
+| Quyết định | Lựa chọn A | Lựa chọn B | Trade-off | Chọn & lý do |
+|---|---|---|---|---|
+| Test runner unit/integration | **Vitest** | Jest | Jest phổ biến, nhiều tài liệu nhưng cần cấu hình thêm (Babel/ts-jest) cho TS + ESM. Vitest dùng chung config/transform với Vite, API gần như giống Jest | **Vitest**: dự án đã dùng Vite, ít cấu hình, chạy nhanh |
+| E2E | **Playwright** | Cypress | Cypress debug trực quan nhưng chạy song song cần trả phí/cấu hình. Playwright có `page.route` chặn API, chạy song song sẵn | **Playwright**: cần chặn mọi `/api/**` và chạy song song để soi flaky (5 lần × 4 luồng) |
+| Tầng kiểm luật "1 người dự phòng/ngày" | Kiểm qua UI (integration/E2E) | Kiểm hàm thuần `assignStandby` (unit) | UI test sát người dùng nhưng chậm, khi đỏ khó biết sai ở đâu | **Unit** cho luật + 1 integration kiểm UI hiển thị câu lỗi |
+
+Trích đoạn: _[dán đoạn AI đề xuất các lựa chọn]_
+
+### 6.3. Iterative Refinement: AI đề xuất → phản biện → sửa → tự kiểm
+
+| Vòng | AI đề xuất | Phản biện | Sửa thành | Tự kiểm bằng |
+|---|---|---|---|---|
+| 1 | Coi lần chạy đầu "Failed to resolve import" là pha Red | Đó là lỗi thiếu module, không phải test đo hành vi chưa có | Thêm stub đúng chữ ký, test đỏ do expected ≠ actual | [evidence/1-red-b.log](evidence/1-red-b.log): Expected `missingPeople: 2` / Received `0` |
+| 2 | Assertion lỏng kiểu `toBeGreaterThan(0)` / regex lỗi | Code sai vẫn xanh | `toEqual` toàn object, câu lỗi đúng từng chữ, schema `zod` cho payload | Mutation: bỏ luật dự phòng → 1 test đỏ, đổi đầu tuần → 11 test đỏ |
+| 3 | Chờ UI bằng `waitForTimeout` | Gây flaky, phụ thuộc tốc độ máy | `findBy*`, `expect(locator).toBeVisible()`, `retries: 0` | 5 lần × 4 luồng: 20/20 xanh |
+| 4 | Playwright `reuseExistingServer: true` ở cổng 3000 | Reviewer gặp: cổng 3000 có web khác → test mở nhầm site, 4 test timeout | Cổng cố định `127.0.0.1:4317` + `strictPort` + URL health riêng của demo | Chạy thử với một server lạ chiếm cổng 4317 → Playwright báo `Port 4317 is already in use`, không test nhầm |
+
+Trích đoạn: _[dán 1–2 câu phản biện thật của bạn với AI]_
+
+## 7. Minh chứng một vòng Red → Green → Refactor theo hành vi
+
+Hành vi `summarizeCoverage(rows)` (tổng hợp thiếu người trong tuần), chi tiết và log tại [evidence/tdd-cycle-summarizeCoverage.md](evidence/tdd-cycle-summarizeCoverage.md):
+
+1. **Red (đúng lý do):** test viết trước; stub trả 0 → `AssertionError`, Expected `{ missingPeople: 2, uncoveredHalfDays: 2 }`, Received `{ 0, 0 }`.
+2. **Green:** cài đặt tối thiểu bằng vòng `for` → 2/2 pass.
+3. **Refactor:** đổi sang `filter` + `reduce` → toàn bộ 53/53 test Vitest vẫn pass.
+4. **Mutation:** đổi `> 0` thành `>= 0` → test đỏ (Received `uncoveredHalfDays: 3`).
+
+Mentor có thể tự chạy lại: `npm run test:unit -- coverageSummary`.
 
 ## Nguồn tham khảo
 
 - Kent Beck, *Test-Driven Development: By Example* (Addison-Wesley, 2002).
 - Martin Fowler, [Test Driven Development](https://martinfowler.com/bliki/TestDrivenDevelopment.html) và [Test Pyramid](https://martinfowler.com/bliki/TestPyramid.html).
 - Testing Library, [Guiding Principles](https://testing-library.com/docs/guiding-principles).
-- Playwright, [Best Practices](https://playwright.dev/docs/best-practices).
+- Playwright, [Best Practices](https://playwright.dev/docs/best-practices) và [webServer](https://playwright.dev/docs/test-webserver).
+- Vitest, [Comparisons with Other Test Runners](https://vitest.dev/guide/comparisons).

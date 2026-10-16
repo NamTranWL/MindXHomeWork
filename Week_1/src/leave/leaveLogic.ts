@@ -134,3 +134,18 @@ export function buildAssigneeChanges(week: LeaveWeekData): AssigneeChangeRow[] {
   }
   return rows;
 }
+
+export interface CoverageSummary {
+  halfDaysWithLeave: number;
+  uncoveredHalfDays: number;
+  missingPeople: number;
+}
+
+/** Summary of the "Procedure assignee changes" table (shown as a warning in the modal). */
+export function summarizeCoverage(rows: readonly AssigneeChangeRow[]): CoverageSummary {
+  return {
+    halfDaysWithLeave: rows.length,
+    uncoveredHalfDays: rows.filter((row) => row.missing > 0).length,
+    missingPeople: rows.reduce((total, row) => total + row.missing, 0),
+  };
+}

@@ -1,0 +1,21 @@
+--- evidence/leaveLogic.green.ts	2026-10-16 13:14:05.187000000 +0000
++++ src/leave/leaveLogic.ts	2026-10-16 13:14:06.649000000 +0000
+@@ -143,13 +143,9 @@
+ 
+ /** Summary of the "Procedure assignee changes" table (shown as a warning in the modal). */
+ export function summarizeCoverage(rows: readonly AssigneeChangeRow[]): CoverageSummary {
+-  let uncovered = 0;
+-  let missing = 0;
+-  for (let i = 0; i < rows.length; i++) {
+-    if (rows[i]!.missing > 0) {
+-      uncovered = uncovered + 1;
+-    }
+-    missing = missing + rows[i]!.missing;
+-  }
+-  return { halfDaysWithLeave: rows.length, uncoveredHalfDays: uncovered, missingPeople: missing };
++  return {
++    halfDaysWithLeave: rows.length,
++    uncoveredHalfDays: rows.filter((row) => row.missing > 0).length,
++    missingPeople: rows.reduce((total, row) => total + row.missing, 0),
++  };
+ }

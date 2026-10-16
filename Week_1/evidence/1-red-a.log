@@ -1,0 +1,40 @@
+
+ RUN  v2.1.8 <Week_1>
+
+ ❯ parallel-tests/unit/coverageSummary.test.ts (2 tests | 2 failed) 7ms
+   × summarizeCoverage – tổng hợp thiếu người trong tuần > tuần không ai nghỉ → mọi chỉ số bằng 0 5ms
+     → summarizeCoverage is not a function
+   × summarizeCoverage – tổng hợp thiếu người trong tuần > cộng dồn số người còn thiếu và đếm buổi chưa được bù đủ 1ms
+     → summarizeCoverage is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  parallel-tests/unit/coverageSummary.test.ts > summarizeCoverage – tổng hợp thiếu người trong tuần > tuần không ai nghỉ → mọi chỉ số bằng 0
+TypeError: summarizeCoverage is not a function
+ ❯ parallel-tests/unit/coverageSummary.test.ts:20:12
+     18| describe('summarizeCoverage – tổng hợp thiếu người trong tuần', () => {
+     19|   it('tuần không ai nghỉ → mọi chỉ số bằng 0', () => {
+     20|     expect(summarizeCoverage([])).toEqual({ halfDaysWithLeave: 0, unco…
+       |            ^
+     21|   });
+     22| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  parallel-tests/unit/coverageSummary.test.ts > summarizeCoverage – tổng hợp thiếu người trong tuần > cộng dồn số người còn thiếu và đếm buổi chưa được bù đủ
+TypeError: summarizeCoverage is not a function
+ ❯ parallel-tests/unit/coverageSummary.test.ts:29:12
+     27|       row({ date: '2026-10-13', absent: ['Hung'], coveredBy: null, mis…
+     28|     ];
+     29|     expect(summarizeCoverage(rows)).toEqual({ halfDaysWithLeave: 3, un…
+       |            ^
+     30|   });
+     31| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  13:13:49
+   Duration  1.04s (transform 75ms, setup 254ms, collect 29ms, tests 7ms, environment 512ms, prepare 71ms)
+
