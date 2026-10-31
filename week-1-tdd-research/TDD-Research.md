@@ -181,7 +181,7 @@ Phân biệt hai loại xác minh:
 - **AI tự xác nhận:** AI trả lời "đúng rồi", "test sẽ pass". Chỉ là ý kiến, không tính là bằng chứng.
 - **Kiểm chứng độc lập:** chạy test và đọc output, đối chiếu nguồn chính thức (docs Vitest/Playwright/Testing Library, sách Kent Beck), mutation check.
 
-> Các ô "Trích đoạn" là chỗ dán 1–2 câu chat thật (không cần dán cả hội thoại). Phần log/test đã có thật trong repo.
+> Hội thoại AI thật cho cả 3 workflow nằm trong [hội thoại AI đầy đủ (Google Drive)](https://drive.google.com/file/d/1Bu2nqIYWyZsZr5NvMoGHfZUDs7EzWYTJ/view?usp=sharing). Phần log/test đã có thật trong repo.
 
 ### 6.1. Layered Questioning: research → brief → ví dụ → validation
 
@@ -192,7 +192,8 @@ Phân biệt hai loại xác minh:
 | Ví dụ | "Cho ví dụ test CLI có file storage, exit code, stderr" | Ví dụ `todo` và bảng Ticket Manager ở mục 4 | Đọc lại từng assertion: có kiểm stderr tách khỏi stdout, file không bị ghi đè không |
 | Validation | "Làm sao biết bộ test này đủ chặt?" | Mutation check (mục 3, 7) | **Chạy thật**: đổi `> 0` thành `>= 0` → test đỏ ([evidence/4-mutation.log](evidence/4-mutation.log)) |
 
-Trích đoạn:https://drive.google.com/file/d/1Bu2nqIYWyZsZr5NvMoGHfZUDs7EzWYTJ/view?usp=sharing
+Trích đoạn: xem phần Layered Questioning trong [hội thoại AI đầy đủ (Google Drive)](https://drive.google.com/file/d/1Bu2nqIYWyZsZr5NvMoGHfZUDs7EzWYTJ/view?usp=sharing).
+
 ### 6.2. Solution Exploration: so sánh ít nhất hai lựa chọn
 
 | Quyết định | Lựa chọn A | Lựa chọn B | Trade-off | Chọn & lý do |
@@ -201,7 +202,7 @@ Trích đoạn:https://drive.google.com/file/d/1Bu2nqIYWyZsZr5NvMoGHfZUDs7EzWYTJ
 | E2E | **Playwright** | Cypress | Cypress debug trực quan nhưng chạy song song cần trả phí/cấu hình. Playwright có `page.route` chặn API, chạy song song sẵn | **Playwright**: cần chặn mọi `/api/**` và chạy song song để soi flaky (5 lần × 4 luồng) |
 | Tầng kiểm luật "1 người dự phòng/ngày" | Kiểm qua UI (integration/E2E) | Kiểm hàm thuần `assignStandby` (unit) | UI test sát người dùng nhưng chậm, khi đỏ khó biết sai ở đâu | **Unit** cho luật + 1 integration kiểm UI hiển thị câu lỗi |
 
-Trích đoạn: _[dán đoạn AI đề xuất các lựa chọn]_
+Trích đoạn: xem phần Solution Exploration trong [hội thoại AI đầy đủ (Google Drive)](https://drive.google.com/file/d/1Bu2nqIYWyZsZr5NvMoGHfZUDs7EzWYTJ/view?usp=sharing).
 
 ### 6.3. Iterative Refinement: AI đề xuất → phản biện → sửa → tự kiểm
 
@@ -212,7 +213,7 @@ Trích đoạn: _[dán đoạn AI đề xuất các lựa chọn]_
 | 3 | Chờ UI bằng `waitForTimeout` | Gây flaky, phụ thuộc tốc độ máy | `findBy*`, `expect(locator).toBeVisible()`, `retries: 0` | 5 lần × 4 luồng: 20/20 xanh |
 | 4 | Playwright `reuseExistingServer: true` ở cổng 3000 | Reviewer gặp: cổng 3000 có web khác → test mở nhầm site, 4 test timeout | Cổng cố định `127.0.0.1:4317` + `strictPort` + URL health riêng của demo | Chạy thử với một server lạ chiếm cổng 4317 → Playwright báo `Port 4317 is already in use`, không test nhầm |
 
-Trích đoạn: _[dán 1–2 câu phản biện thật của bạn với AI]_
+Trích đoạn: xem phần Iterative Refinement trong [hội thoại AI đầy đủ (Google Drive)](https://drive.google.com/file/d/1Bu2nqIYWyZsZr5NvMoGHfZUDs7EzWYTJ/view?usp=sharing).
 
 ## 7. Minh chứng một vòng Red → Green → Refactor theo hành vi
 

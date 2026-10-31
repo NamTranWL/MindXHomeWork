@@ -9,7 +9,7 @@ Nguồn: chuyển từ `Week_1/` của cấu trúc cũ. Các commit gốc (`9a5a
 | [LectureHomeworkResearch.pdf](LectureHomeworkResearch.pdf) | Bản PDF nộp bài kèm minh chứng |
 | [evidence/tdd-cycle-summarizeCoverage.md](evidence/tdd-cycle-summarizeCoverage.md) | Log thật một vòng TDD theo hành vi (Red do expected ≠ actual → Green → Refactor → mutation) |
 | [parallel-tests/README.md](parallel-tests/README.md) | Bộ test thực hành "Leave & Standby Modal": 34 unit · 19 integration · 4 E2E |
-| [ai-workflow-log.md](ai-workflow-log.md) | Trích đoạn hội thoại AI làm bằng chứng cho mục 6 |
+| [ai-workflow-log.md](ai-workflow-log.md) | Link hội thoại AI (Google Drive) làm bằng chứng cho mục 6 |
 
 ## Chạy test
 
@@ -33,7 +33,7 @@ npm run dev                       # xem tay: http://127.0.0.1:4317/schedule?date
 | Ví dụ test cho Ticket Manager CLI | ✅ | §4, §4.1 (6 test case) |
 | Test giúp kiểm soát code AI | ✅ | §3 (mutation check, guardrails) |
 | Lỗi testing thường gặp | ✅ | §3b |
-| Bằng chứng Layered Questioning | ✅ | §6.1 + link Drive |
-| Bằng chứng Solution Exploration | ⚠️ còn thiếu trích đoạn chat | §6.2 |
-| Bằng chứng Iterative Refinement | ⚠️ còn thiếu trích đoạn chat | §6.3 |
+| Bằng chứng Layered Questioning | ✅ | §6.1 + hội thoại trên Drive |
+| Bằng chứng Solution Exploration | ✅ | §6.2 + hội thoại trên Drive |
+| Bằng chứng Iterative Refinement | ✅ | §6.3 + hội thoại trên Drive |
 | Một vòng TDD có log thật | ✅ | §7 + `evidence/` |

@@ -19,7 +19,7 @@ Tài liệu đề bài nằm ở repo riêng: `../MindXOnboarding/docs/plans/`.
 - **Không commit** dữ liệu thật có thông tin cá nhân (PII), file `.env`, API key. Screenshot phải che thông tin nhạy cảm.
 
 ## Tiến độ
-- [x] Tuần 1 — TDD research (còn bổ sung trích đoạn chat §6.2, §6.3)
+- [x] Tuần 1 — TDD research
 - [ ] Tuần 2 — Ticket Manager CLI
 - [ ] Tuần 3 — KB API integration
 - [ ] Tuần 4 — 6 scenario
