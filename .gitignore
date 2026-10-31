@@ -1,0 +1,27 @@
+# Dependencies & build
+node_modules/
+dist/
+build/
+coverage/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Local/OS
+.DS_Store
+Thumbs.db
+*.local
+.vscode/*
+!.vscode/extensions.json
+
+# Raw data có thể chứa PII (chỉ commit dữ liệu đã ẩn danh)
+**/raw-data/
+*.raw.xlsx
