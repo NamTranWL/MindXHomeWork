@@ -38,4 +38,11 @@ describe('parseNewTicket - validate và chuẩn hoá input tạo ticket', () => 
   it('T6: không truyền priority → "medium"', () => {
     expect(parseNewTicket({ title: 'x' }).priority).toBe('medium');
   });
+
+  it('T7: priority ngoài low | medium | high → ValidationError', () => {
+    const act = () => parseNewTicket({ title: 'x', priority: 'urgent' });
+
+    expect(act).toThrow(ValidationError);
+    expect(act).toThrow(/^invalid priority "urgent"\. Allowed: low, medium, high$/);
+  });
 });

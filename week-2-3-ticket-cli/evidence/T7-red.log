@@ -1,0 +1,39 @@
+# T7 - red: T7 invalid priority -> ValidationError
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/models/ticket.test.ts
+  parseNewTicket - validate và chuẩn hoá input tạo ticket
+    ✓ T1: thiếu title → ValidationError "--title is required" (12 ms)
+    ✓ T2: title chỉ có khoảng trắng → ValidationError như T1 (2 ms)
+    ✓ T3: title được trim hai đầu (1 ms)
+    ✓ T4: không truyền status → "open" (1 ms)
+    ✓ T5: status ngoài open | in-progress | closed → ValidationError liệt kê giá trị hợp lệ (2 ms)
+    ✓ T5b: status hợp lệ (in-progress) được giữ nguyên (1 ms)
+    ✓ T6: không truyền priority → "medium" (4 ms)
+    ✕ T7: priority ngoài low | medium | high → ValidationError (1 ms)
+
+  ● parseNewTicket - validate và chuẩn hoá input tạo ticket › T7: priority ngoài low | medium | high → ValidationError
+
+    expect(received).toThrow(expected)
+
+    Expected constructor: ValidationError
+
+    Received function did not throw
+
+      43 |     const act = () => parseNewTicket({ title: 'x', priority: 'urgent' });
+      44 |
+    > 45 |     expect(act).toThrow(ValidationError);
+         |                 ^
+      46 |     expect(act).toThrow(/^invalid priority "urgent"\. Allowed: low, medium, high$/);
+      47 |   });
+      48 | });
+
+      at Object.<anonymous> (tests/unit/models/ticket.test.ts:45:17)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 7 passed, 8 total
+Snapshots:   0 total
+Time:        0.431 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
