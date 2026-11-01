@@ -30,4 +30,8 @@ describe('parseNewTicket - validate và chuẩn hoá input tạo ticket', () => 
     expect(act).toThrow(ValidationError);
     expect(act).toThrow(/^invalid status "done"\. Allowed: open, in-progress, closed$/);
   });
+
+  it('T5b: status hợp lệ (in-progress) được giữ nguyên', () => {
+    expect(parseNewTicket({ title: 'x', status: 'in-progress' }).status).toBe('in-progress');
+  });
 });
