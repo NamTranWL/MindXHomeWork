@@ -19,4 +19,12 @@ describe('TicketService.create', () => {
     expect(created).toEqual(expected);
     expect(repo.saves).toEqual([[expected]]);
   });
+
+  it('T14: đã có ticket → id = max(id) + 1', async () => {
+    const repo = new InMemoryTicketRepository([ticket({ id: 1 }), ticket({ id: 5 }), ticket({ id: 3 })]);
+
+    const created = await new TicketService(repo).create({ title: 'x' });
+
+    expect(created.id).toBe(6);
+  });
 });

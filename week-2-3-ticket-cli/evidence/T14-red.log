@@ -1,0 +1,30 @@
+# T14 - red: T14 create assigns max id + 1
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/services/ticket-service.test.ts
+  ● TicketService.create › T14: đã có ticket → id = max(id) + 1
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 6
+    Received: 1
+
+      26 |     const created = await new TicketService(repo).create({ title: 'x' });
+      27 |
+    > 28 |     expect(created.id).toBe(6);
+         |                        ^
+      29 |   });
+      30 | });
+      31 |
+
+      at Object.<anonymous> (tests/unit/services/ticket-service.test.ts:28:24)
+
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 21 passed, 22 total
+Snapshots:   0 total
+Time:        0.528 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
