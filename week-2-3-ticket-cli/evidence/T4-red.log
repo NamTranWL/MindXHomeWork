@@ -1,0 +1,34 @@
+# T4 - red: T4 default status is open
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/models/ticket.test.ts
+  parseNewTicket - validate và chuẩn hoá input tạo ticket
+    ✓ T1: thiếu title → ValidationError "--title is required" (11 ms)
+    ✓ T2: title chỉ có khoảng trắng → ValidationError như T1 (2 ms)
+    ✓ T3: title được trim hai đầu (1 ms)
+    ✕ T4: không truyền status → "open" (2 ms)
+
+  ● parseNewTicket - validate và chuẩn hoá input tạo ticket › T4: không truyền status → "open"
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "open"
+    Received: undefined
+
+      22 |
+      23 |   it('T4: không truyền status → "open"', () => {
+    > 24 |     expect(parseNewTicket({ title: 'x' }).status).toBe('open');
+         |                                                   ^
+      25 |   });
+      26 | });
+      27 |
+
+      at Object.<anonymous> (tests/unit/models/ticket.test.ts:24:51)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 3 passed, 4 total
+Snapshots:   0 total
+Time:        0.398 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

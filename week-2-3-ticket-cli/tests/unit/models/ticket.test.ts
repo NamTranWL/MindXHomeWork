@@ -19,4 +19,8 @@ describe('parseNewTicket - validate và chuẩn hoá input tạo ticket', () => 
   it('T3: title được trim hai đầu', () => {
     expect(parseNewTicket({ title: '  Login lỗi 500  ' }).title).toBe('Login lỗi 500');
   });
+
+  it('T4: không truyền status → "open"', () => {
+    expect(parseNewTicket({ title: 'x' }).status).toBe('open');
+  });
 });
