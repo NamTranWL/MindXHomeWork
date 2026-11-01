@@ -19,5 +19,5 @@ export function parseNewTicket(input: NewTicketInput) {
   if (!isStatus(status)) {
     throw new ValidationError(`invalid status "${status}". Allowed: ${STATUSES.join(', ')}`);
   }
-  return { title, status };
+  return { title, status, priority: 'medium' };
 }
