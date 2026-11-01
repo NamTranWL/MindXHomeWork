@@ -42,7 +42,7 @@ export function parseNewTicket(input: NewTicketInput) {
 
 export function normalizeTags(values: string[]): string[] {
   const result: string[] = [];
-  for (const value of values) {
+  for (const value of values.flatMap((v) => v.split(','))) {
     const tag = value.trim().toLowerCase();
     if (tag && !result.includes(tag)) result.push(tag);
   }
