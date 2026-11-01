@@ -12,24 +12,27 @@ export interface NewTicketInput {
   priority?: string;
 }
 
-function isStatus(value: string): value is Status {
-  return (STATUSES as readonly string[]).includes(value);
+function oneOf<T extends string>(field: string, allowed: readonly T[], value: string): T {
+  if (!(allowed as readonly string[]).includes(value)) {
+    throw new ValidationError(`invalid ${field} "${value}". Allowed: ${allowed.join(', ')}`);
+  }
+  return value as T;
 }
 
-function isPriority(value: string): value is Priority {
-  return (PRIORITIES as readonly string[]).includes(value);
+export function parseStatus(value: string): Status {
+  return oneOf('status', STATUSES, value);
+}
+
+export function parsePriority(value: string): Priority {
+  return oneOf('priority', PRIORITIES, value);
 }
 
 export function parseNewTicket(input: NewTicketInput) {
   const title = input.title?.trim();
   if (!title) throw new ValidationError('--title is required');
-  const status = input.status ?? 'open';
-  if (!isStatus(status)) {
-    throw new ValidationError(`invalid status "${status}". Allowed: ${STATUSES.join(', ')}`);
-  }
-  const priority = input.priority ?? 'medium';
-  if (!isPriority(priority)) {
-    throw new ValidationError(`invalid priority "${priority}". Allowed: ${PRIORITIES.join(', ')}`);
-  }
-  return { title, status, priority };
+  return {
+    title,
+    status: parseStatus(input.status ?? 'open'),
+    priority: parsePriority(input.priority ?? 'medium'),
+  };
 }
