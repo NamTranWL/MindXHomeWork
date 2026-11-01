@@ -8,6 +8,7 @@ export interface TicketRepository {
 export interface ListFilter {
   status?: string;
   priority?: string;
+  tags?: string[];
 }
 
 export class TicketService {
@@ -26,6 +27,7 @@ export class TicketService {
     return tickets
       .filter((t) => filter.status === undefined || t.status === filter.status)
       .filter((t) => filter.priority === undefined || t.priority === filter.priority)
+      .filter((t) => (filter.tags ?? []).every((tag) => t.tags.includes(tag)))
       .sort((a, b) => a.id - b.id);
   }
 }
