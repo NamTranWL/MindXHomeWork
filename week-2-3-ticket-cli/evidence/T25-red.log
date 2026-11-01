@@ -1,0 +1,27 @@
+# T25 - red: T25 get returns the ticket with that id
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/services/ticket-service.test.ts
+  ● TicketService.get › T25: id tồn tại → trả đúng ticket
+
+    TypeError: service(...).get is not a function
+
+       97 |
+       98 |   it('T25: id tồn tại → trả đúng ticket', async () => {
+    >  99 |     expect(await service().get(2)).toEqual(ticket({ id: 2, title: 'Thứ hai' }));
+          |                            ^
+      100 |   });
+      101 | });
+      102 |
+
+      at Object.<anonymous> (tests/unit/services/ticket-service.test.ts:99:28)
+
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 33 passed, 34 total
+Snapshots:   0 total
+Time:        0.507 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

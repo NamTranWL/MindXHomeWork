@@ -89,3 +89,12 @@ describe('TicketService.list', () => {
     await expect(promise).rejects.toThrow(message);
   });
 });
+
+describe('TicketService.get', () => {
+  const service = () =>
+    new TicketService(new InMemoryTicketRepository([ticket({ id: 1 }), ticket({ id: 2, title: 'Thứ hai' })]));
+
+  it('T25: id tồn tại → trả đúng ticket', async () => {
+    expect(await service().get(2)).toEqual(ticket({ id: 2, title: 'Thứ hai' }));
+  });
+});
