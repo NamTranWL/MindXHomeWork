@@ -1,0 +1,37 @@
+# T17 - red: T17 list filters by status
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/services/ticket-service.test.ts
+  ● TicketService.list › T17: lọc theo status
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 2
+
+      Array [
+        1,
+        2,
+    +   3,
+    +   4,
+      ]
+
+      53 |
+      54 |   it('T17: lọc theo status', async () => {
+    > 55 |     expect(ids(await service().list({ status: 'open' }))).toEqual([1, 2]);
+         |                                                           ^
+      56 |   });
+      57 | });
+      58 |
+
+      at Object.<anonymous> (tests/unit/services/ticket-service.test.ts:55:59)
+
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 24 passed, 25 total
+Snapshots:   0 total
+Time:        0.713 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

@@ -50,4 +50,8 @@ describe('TicketService.list', () => {
   it('T16: không filter → tất cả ticket, theo id tăng dần', async () => {
     expect(ids(await service().list())).toEqual([1, 2, 3, 4]);
   });
+
+  it('T17: lọc theo status', async () => {
+    expect(ids(await service().list({ status: 'open' }))).toEqual([1, 2]);
+  });
 });
