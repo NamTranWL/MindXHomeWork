@@ -1,0 +1,37 @@
+# T20 - red: T20 list filters by one tag
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/services/ticket-service.test.ts
+  ● TicketService.list › T20: lọc theo một tag
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 2
+
+      Array [
+        1,
+        2,
+    +   3,
+    +   4,
+      ]
+
+      65 |
+      66 |   it('T20: lọc theo một tag', async () => {
+    > 67 |     expect(ids(await service().list({ tags: ['login'] }))).toEqual([1, 2]);
+         |                                                            ^
+      68 |   });
+      69 | });
+      70 |
+
+      at Object.<anonymous> (tests/unit/services/ticket-service.test.ts:67:60)
+
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 27 passed, 28 total
+Snapshots:   0 total
+Time:        0.49 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
