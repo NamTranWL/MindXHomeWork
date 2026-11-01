@@ -1,0 +1,49 @@
+# T24 - red: T24 invalid status/priority filter -> ValidationError
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/services/ticket-service.test.ts
+  ● TicketService.list › T24: filter {"status": "done"} không hợp lệ → ValidationError
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: []
+
+      86 |     const promise = service().list(filter);
+      87 |
+    > 88 |     await expect(promise).rejects.toThrow(ValidationError);
+         |           ^
+      89 |     await expect(promise).rejects.toThrow(message);
+      90 |   });
+      91 | });
+
+      at expect (node_modules/expect/build/index.js:2116:15)
+      at tests/unit/services/ticket-service.test.ts:88:11
+
+  ● TicketService.list › T24: filter {"priority": "urgent"} không hợp lệ → ValidationError
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: []
+
+      86 |     const promise = service().list(filter);
+      87 |
+    > 88 |     await expect(promise).rejects.toThrow(ValidationError);
+         |           ^
+      89 |     await expect(promise).rejects.toThrow(message);
+      90 |   });
+      91 | });
+
+      at expect (node_modules/expect/build/index.js:2116:15)
+      at tests/unit/services/ticket-service.test.ts:88:11
+
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       2 failed, 31 passed, 33 total
+Snapshots:   0 total
+Time:        0.513 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

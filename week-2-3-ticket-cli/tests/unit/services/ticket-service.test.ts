@@ -78,4 +78,14 @@ describe('TicketService.list', () => {
   it('T23: không ticket nào khớp → []', async () => {
     expect(await service().list({ status: 'closed', tags: ['login'] })).toEqual([]);
   });
+
+  it.each([
+    [{ status: 'done' }, /^invalid status "done"\. Allowed: open, in-progress, closed$/],
+    [{ priority: 'urgent' }, /^invalid priority "urgent"\. Allowed: low, medium, high$/],
+  ])('T24: filter %p không hợp lệ → ValidationError', async (filter, message) => {
+    const promise = service().list(filter);
+
+    await expect(promise).rejects.toThrow(ValidationError);
+    await expect(promise).rejects.toThrow(message);
+  });
 });
