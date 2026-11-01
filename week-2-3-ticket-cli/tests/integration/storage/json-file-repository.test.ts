@@ -107,4 +107,12 @@ describe('JsonFileRepository (file thật trong thư mục tạm)', () => {
     expect(await readFile(file, 'utf8')).toBe('[]');
     expect(await readdir(dir)).toEqual(['tickets.json']);
   });
+
+  it('T40: ghi khi thư mục cha chưa tồn tại → tự tạo thư mục, ghi thành công', async () => {
+    const nested = join(dir, 'nested', 'deep', 'tickets.json');
+
+    await new JsonFileRepository(nested).save([ticket({ id: 1 })]);
+
+    expect(await new JsonFileRepository(nested).load()).toEqual([ticket({ id: 1 })]);
+  });
 });

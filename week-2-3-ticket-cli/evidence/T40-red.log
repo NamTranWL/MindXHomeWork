@@ -1,0 +1,29 @@
+# T40 - red: T40 save creates missing parent directories
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/integration/storage/json-file-repository.test.ts
+  ● JsonFileRepository (file thật trong thư mục tạm) › T40: ghi khi thư mục cha chưa tồn tại → tự tạo thư mục, ghi thành công
+
+    ENOENT: no such file or directory, open '/sessions/rcw-01sfecuqtetiwtkcgq8npxpo/tmp/tickets-pkyqFY/nested/deep/tickets.json.91.d9a9fe2c.tmp'
+
+      53 |   async save(tickets: Ticket[]): Promise<void> {
+      54 |     const tempPath = `${this.filePath}.${process.pid}.${randomBytes(4).toString('hex')}.tmp`;
+    > 55 |     await writeFile(tempPath, JSON.stringify(tickets, null, 2) + '\n', 'utf8');
+         |     ^
+      56 |     try {
+      57 |       await this.renameWithRetry(tempPath, this.filePath);
+      58 |     } catch (error) {
+
+      at JsonFileRepository.save (src/storage/json-file-repository.ts:55:5)
+      at Object.<anonymous> (tests/integration/storage/json-file-repository.test.ts:114:5)
+
+PASS tests/unit/models/ticket.test.ts
+PASS tests/unit/services/ticket-service.test.ts
+
+Test Suites: 1 failed, 2 passed, 3 total
+Tests:       1 failed, 50 passed, 51 total
+Snapshots:   0 total
+Time:        0.576 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
