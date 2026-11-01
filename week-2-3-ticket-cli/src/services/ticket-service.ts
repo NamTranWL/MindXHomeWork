@@ -7,6 +7,7 @@ export interface TicketRepository {
 
 export interface ListFilter {
   status?: string;
+  priority?: string;
 }
 
 export class TicketService {
@@ -24,6 +25,7 @@ export class TicketService {
     const tickets = await this.repo.load();
     return tickets
       .filter((t) => filter.status === undefined || t.status === filter.status)
+      .filter((t) => filter.priority === undefined || t.priority === filter.priority)
       .sort((a, b) => a.id - b.id);
   }
 }
