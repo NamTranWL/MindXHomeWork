@@ -1,0 +1,31 @@
+# T39a - red: T39a save retries rename on EPERM
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/integration/storage/json-file-repository.test.ts
+  ● JsonFileRepository (file thật trong thư mục tạm) › T39a: rename lỗi EPERM 2 lần rồi thành công → ghi thành công
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 3
+    Received: 0
+
+      90 |     await repo.save([ticket({ id: 1 })]);
+      91 |
+    > 92 |     expect(calls).toBe(3);
+         |                   ^
+      93 |     expect(await new JsonFileRepository(file).load()).toEqual([ticket({ id: 1 })]);
+      94 |   });
+      95 | });
+
+      at Object.<anonymous> (tests/integration/storage/json-file-repository.test.ts:92:19)
+
+PASS tests/unit/services/ticket-service.test.ts
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 2 passed, 3 total
+Tests:       1 failed, 48 passed, 49 total
+Snapshots:   0 total
+Time:        0.572 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

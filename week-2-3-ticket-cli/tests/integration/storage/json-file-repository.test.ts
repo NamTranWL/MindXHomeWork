@@ -77,4 +77,19 @@ describe('JsonFileRepository (file thật trong thư mục tạm)', () => {
 
     expect(await readdir(dir)).toEqual(['tickets.json']);
   });
+
+  it('T39a: rename lỗi EPERM 2 lần rồi thành công → ghi thành công', async () => {
+    let calls = 0;
+    const flakyRename = async (from: string, to: string) => {
+      calls++;
+      if (calls <= 2) throw Object.assign(new Error('EPERM: operation not permitted'), { code: 'EPERM' });
+      await rename(from, to);
+    };
+    const repo = new JsonFileRepository(file, { rename: flakyRename, retryDelaysMs: [0, 0, 0] });
+
+    await repo.save([ticket({ id: 1 })]);
+
+    expect(calls).toBe(3);
+    expect(await new JsonFileRepository(file).load()).toEqual([ticket({ id: 1 })]);
+  });
 });
