@@ -20,6 +20,7 @@ export interface NewTicketInput {
   status?: string;
   priority?: string;
   description?: string;
+  tags?: string[];
 }
 
 function oneOf<T extends string>(field: string, allowed: readonly T[], value: string): T {
@@ -45,7 +46,7 @@ export function parseNewTicket(input: NewTicketInput): Omit<Ticket, 'id'> {
     status: parseStatus(input.status ?? 'open'),
     priority: parsePriority(input.priority ?? 'medium'),
     description: input.description ?? '',
-    tags: [],
+    tags: normalizeTags(input.tags ?? []),
   };
 }
 
