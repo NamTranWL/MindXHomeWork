@@ -1,5 +1,6 @@
 import { Command, CommanderError } from 'commander';
 import { ValidationError } from '../errors';
+import type { Ticket } from '../models/ticket';
 import { TicketService } from '../services/ticket-service';
 import { JsonFileRepository } from '../storage/json-file-repository';
 
@@ -12,6 +13,12 @@ export interface RunIO {
 interface CreateOptions {
   title?: string;
   description?: string;
+  status?: string;
+  priority?: string;
+  tags?: string[];
+}
+
+interface ListOptions {
   status?: string;
   priority?: string;
   tags?: string[];
@@ -39,12 +46,32 @@ export async function run(argv: string[], io: RunIO): Promise<number> {
       io.stdout(`Created ticket #${ticket.id}\n`);
     });
 
+  program
+    .command('list')
+    .description('list tickets')
+    .option('--status <status>')
+    .option('--priority <priority>')
+    .option('--tags <tags>', 'comma-separated, repeatable; ticket must have all', collect)
+    .action(async (options: ListOptions) => {
+      const tickets = await service.list(options);
+      if (tickets.length === 0) {
+        io.stdout('No tickets found\n');
+        return;
+      }
+      for (const ticket of tickets) io.stdout(formatLine(ticket));
+    });
+
   try {
     await program.parseAsync(argv, { from: 'user' });
     return 0;
   } catch (error) {
     return reportError(error, io);
   }
+}
+
+function formatLine(ticket: Ticket): string {
+  const tags = ticket.tags.length > 0 ? ` (tags: ${ticket.tags.join(', ')})` : '';
+  return `#${ticket.id} [${ticket.status}] [${ticket.priority}] ${ticket.title}${tags}\n`;
 }
 
 function reportError(error: unknown, io: RunIO): number {
