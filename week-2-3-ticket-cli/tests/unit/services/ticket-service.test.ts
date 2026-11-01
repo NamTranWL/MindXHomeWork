@@ -66,4 +66,8 @@ describe('TicketService.list', () => {
   it('T20: lọc theo một tag', async () => {
     expect(ids(await service().list({ tags: ['login'] }))).toEqual([1, 2]);
   });
+
+  it('T21: nhiều tag theo AND → ticket thiếu một tag bị loại', async () => {
+    expect(ids(await service().list({ tags: ['lms', 'login'] }))).toEqual([1]);
+  });
 });
