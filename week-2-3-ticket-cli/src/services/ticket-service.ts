@@ -15,4 +15,9 @@ export class TicketService {
     await this.repo.save([...tickets, created]);
     return created;
   }
+
+  async list(): Promise<Ticket[]> {
+    const tickets = await this.repo.load();
+    return [...tickets].sort((a, b) => a.id - b.id);
+  }
 }
