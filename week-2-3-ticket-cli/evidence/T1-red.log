@@ -1,0 +1,23 @@
+# T1 - red: thiếu title -> ValidationError "--title is required"
+# Trạng thái: commit eca7fbe (đã có test T1, chưa có src/)
+# Lệnh: npx jest   |   Exit code: 1
+# Tái tạo ngày 2026-11-01 bằng cách chạy lại test trên đúng cây file của commit eca7fbe (Linux, Node 22).
+# Lý do đỏ: chưa có src/models/ticket.ts và src/errors.ts, nên test suite không biên dịch được.
+
+FAIL tests/unit/models/ticket.test.ts
+  ● Test suite failed to run
+
+    tests/unit/models/ticket.test.ts:1:32 - error TS2307: Cannot find module '../../../src/models/ticket' or its corresponding type declarations.
+
+    1 import { parseNewTicket } from '../../../src/models/ticket';
+                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    tests/unit/models/ticket.test.ts:2:33 - error TS2307: Cannot find module '../../../src/errors' or its corresponding type declarations.
+
+    2 import { ValidationError } from '../../../src/errors';
+                                      ~~~~~~~~~~~~~~~~~~~~~
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        1.961 s
+Ran all test suites.
