@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { StorageError } from '../errors';
 import type { Ticket } from '../models/ticket';
 import type { TicketRepository } from '../services/ticket-service';
 
@@ -15,7 +16,11 @@ export class JsonFileRepository implements TicketRepository {
     }
     text = text.replace(/^﻿/, '');
     if (text.trim() === '') return [];
-    return JSON.parse(text);
+    try {
+      return JSON.parse(text);
+    } catch {
+      throw new StorageError(`cannot read ${this.filePath} (invalid JSON)`);
+    }
   }
 
   async save(_tickets: Ticket[]): Promise<void> {}
