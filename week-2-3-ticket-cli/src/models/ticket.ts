@@ -39,3 +39,12 @@ export function parseNewTicket(input: NewTicketInput) {
     tags: [] as string[],
   };
 }
+
+export function normalizeTags(values: string[]): string[] {
+  const result: string[] = [];
+  for (const value of values) {
+    const tag = value.trim().toLowerCase();
+    if (tag && !result.includes(tag)) result.push(tag);
+  }
+  return result;
+}
