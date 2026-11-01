@@ -6,6 +6,15 @@ export type Status = (typeof STATUSES)[number];
 const PRIORITIES = ['low', 'medium', 'high'] as const;
 export type Priority = (typeof PRIORITIES)[number];
 
+export interface Ticket {
+  id: number;
+  title: string;
+  description: string;
+  status: Status;
+  priority: Priority;
+  tags: string[];
+}
+
 export interface NewTicketInput {
   title?: string;
   status?: string;
@@ -28,7 +37,7 @@ export function parsePriority(value: string): Priority {
   return oneOf('priority', PRIORITIES, value);
 }
 
-export function parseNewTicket(input: NewTicketInput) {
+export function parseNewTicket(input: NewTicketInput): Omit<Ticket, 'id'> {
   const title = input.title?.trim();
   if (!title) throw new ValidationError('--title is required');
   return {
@@ -36,7 +45,7 @@ export function parseNewTicket(input: NewTicketInput) {
     status: parseStatus(input.status ?? 'open'),
     priority: parsePriority(input.priority ?? 'medium'),
     description: input.description ?? '',
-    tags: [] as string[],
+    tags: [],
   };
 }
 
