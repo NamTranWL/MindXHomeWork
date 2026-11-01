@@ -6,7 +6,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/jest": "30.0.0",
