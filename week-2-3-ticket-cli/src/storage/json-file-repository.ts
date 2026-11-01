@@ -16,11 +16,16 @@ export class JsonFileRepository implements TicketRepository {
     }
     text = text.replace(/^﻿/, '');
     if (text.trim() === '') return [];
+    let data: unknown;
     try {
-      return JSON.parse(text);
+      data = JSON.parse(text);
     } catch {
       throw new StorageError(`cannot read ${this.filePath} (invalid JSON)`);
     }
+    if (!Array.isArray(data)) {
+      throw new StorageError(`cannot read ${this.filePath} (expected a JSON array)`);
+    }
+    return data;
   }
 
   async save(_tickets: Ticket[]): Promise<void> {}
