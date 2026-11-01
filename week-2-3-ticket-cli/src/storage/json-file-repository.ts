@@ -14,7 +14,7 @@ export class JsonFileRepository implements TicketRepository {
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') return [];
       throw error;
     }
-    text = text.replace(/^﻿/, '');
+    text = text.replace(/^\uFEFF/, '');
     if (text.trim() === '') return [];
     let data: unknown;
     try {
