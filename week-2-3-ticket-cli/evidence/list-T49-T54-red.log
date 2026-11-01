@@ -1,0 +1,159 @@
+# list-T49-T54 - red: list command T49-T54
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/integration/commands/list.test.ts
+  ● tickets list › T49: có dữ liệu → in mỗi ticket một dòng theo id tăng dần, exit 0
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 5
+    + Received  + 3
+
+      Object {
+    -   "code": 0,
+    -   "stderr": "",
+    -   "stdout": "#1 [open] [high] Login lỗi 500 (tags: lms, login)
+    - #2 [in-progress] [medium] Trang chủ chậm
+    - #3 [open] [low] Sai chính tả (tags: lms)
+    +   "code": 2,
+    +   "stderr": "error: unknown command 'list'
+      ",
+    +   "stdout": "",
+      }
+
+      39 |     const result = await runCli(['list'], { TICKETS_FILE: file });
+      40 |
+    > 41 |     expect(result).toEqual({ code: 0, stdout: line1 + line2 + line3, stderr: '' });
+         |                    ^
+      42 |   });
+      43 |
+      44 |   it('T50: file chưa tồn tại → exit 0, báo rỗng, không tạo file', async () => {
+
+      at Object.<anonymous> (tests/integration/commands/list.test.ts:41:20)
+
+  ● tickets list › T50: file chưa tồn tại → exit 0, báo rỗng, không tạo file
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 3
+
+      Object {
+    -   "code": 0,
+    -   "stderr": "",
+    -   "stdout": "No tickets found
+    +   "code": 2,
+    +   "stderr": "error: unknown command 'list'
+      ",
+    +   "stdout": "",
+      }
+
+      45 |     const result = await runCli(['list'], { TICKETS_FILE: file });
+      46 |
+    > 47 |     expect(result).toEqual({ code: 0, stdout: 'No tickets found\n', stderr: '' });
+         |                    ^
+      48 |     expect(existsSync(file)).toBe(false);
+      49 |   });
+      50 |
+
+      at Object.<anonymous> (tests/integration/commands/list.test.ts:47:20)
+
+  ● tickets list › T51: --status open --priority high → chỉ in ticket khớp
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "#1 [open] [high] Login lỗi 500 (tags: lms, login)
+    "
+    Received: ""
+
+      54 |     const result = await runCli(['list', '--status', 'open', '--priority', 'high'], { TICKETS_FILE: file });
+      55 |
+    > 56 |     expect(result.stdout).toBe(line1);
+         |                           ^
+      57 |   });
+      58 |
+      59 |   it('T52: --tags lms,login → AND; --tags LMS khớp tag "lms"', async () => {
+
+      at Object.<anonymous> (tests/integration/commands/list.test.ts:56:27)
+
+  ● tickets list › T52: --tags lms,login → AND; --tags LMS khớp tag "lms"
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "#1 [open] [high] Login lỗi 500 (tags: lms, login)
+    "
+    Received: ""
+
+      63 |     const upper = await runCli(['list', '--tags', 'LMS'], { TICKETS_FILE: file });
+      64 |
+    > 65 |     expect(both.stdout).toBe(line1);
+         |                         ^
+      66 |     expect(upper.stdout).toBe(line1 + line3);
+      67 |   });
+      68 |
+
+      at Object.<anonymous> (tests/integration/commands/list.test.ts:65:25)
+
+  ● tickets list › T53: --status done → exit 2
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "code": 2,
+    -   "stderr": "Error: invalid status \"done\". Allowed: open, in-progress, closed
+    +   "stderr": "error: unknown command 'list'
+      ",
+        "stdout": "",
+      }
+
+      72 |     const result = await runCli(['list', '--status', 'done'], { TICKETS_FILE: file });
+      73 |
+    > 74 |     expect(result).toEqual({
+         |                    ^
+      75 |       code: 2,
+      76 |       stdout: '',
+      77 |       stderr: 'Error: invalid status "done". Allowed: open, in-progress, closed\n',
+
+      at Object.<anonymous> (tests/integration/commands/list.test.ts:74:20)
+
+  ● tickets list › T54: file hỏng → exit 1, stderr "Error: cannot read <file> (invalid JSON)", file giữ nguyên (subprocess)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   "code": 1,
+    -   "stderr": "Error: cannot read /sessions/rcw-01sfecuqtetiwtkcgq8npxpo/tmp/tickets-cli-zf6ZVz/tickets.json (invalid JSON)
+    +   "code": 2,
+    +   "stderr": "error: unknown command 'list'
+      ",
+        "stdout": "",
+      }
+
+      86 |       const result = runCliProcess(['list'], { TICKETS_FILE: file });
+      87 |
+    > 88 |       expect(result).toEqual({ code: 1, stdout: '', stderr: `Error: cannot read ${file} (invalid JSON)\n` });
+         |                      ^
+      89 |       expect(readText(file)).toBe('{ not json');
+      90 |     },
+      91 |     SUBPROCESS_TIMEOUT_MS,
+
+      at Object.<anonymous> (tests/integration/commands/list.test.ts:88:22)
+
+PASS tests/integration/commands/create.test.ts
+PASS tests/integration/storage/json-file-repository.test.ts
+PASS tests/unit/models/ticket.test.ts
+PASS tests/unit/services/ticket-service.test.ts
+
+Test Suites: 1 failed, 4 passed, 5 total
+Tests:       6 failed, 60 passed, 66 total
+Snapshots:   0 total
+Time:        1.193 s
+Ran all test suites.
+Test results written to: ../jest.json
