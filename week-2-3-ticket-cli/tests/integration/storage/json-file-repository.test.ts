@@ -35,4 +35,11 @@ describe('JsonFileRepository (file thật trong thư mục tạm)', () => {
 
     expect(await new JsonFileRepository(file).load()).toEqual([]);
   });
+
+  it('T35: file có BOM UTF-8 và JSON hợp lệ → đọc bình thường', async () => {
+    const tickets = [ticket({ id: 1, title: 'Login lỗi 500', tags: ['lms'] })];
+    await writeFile(file, '﻿' + JSON.stringify(tickets), 'utf8');
+
+    expect(await new JsonFileRepository(file).load()).toEqual(tickets);
+  });
 });

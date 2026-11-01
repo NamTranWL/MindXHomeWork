@@ -1,0 +1,45 @@
+# T35 - red: T35 UTF-8 BOM is stripped before parsing
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/integration/storage/json-file-repository.test.ts
+  ● JsonFileRepository (file thật trong thư mục tạm) › T35: file có BOM UTF-8 và JSON hợp lệ → đọc bình thường
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 12
+    + Received  +  1
+
+    - Array [
+    -   Object {
+    -     "description": "",
+    -     "id": 1,
+    -     "priority": "medium",
+    -     "status": "open",
+    -     "tags": Array [
+    -       "lms",
+    -     ],
+    -     "title": "Login lỗi 500",
+    -   },
+    - ]
+    + Array []
+
+      41 |     await writeFile(file, '﻿' + JSON.stringify(tickets), 'utf8');
+      42 |
+    > 43 |     expect(await new JsonFileRepository(file).load()).toEqual(tickets);
+         |                                                       ^
+      44 |   });
+      45 | });
+      46 |
+
+      at Object.<anonymous> (tests/integration/storage/json-file-repository.test.ts:43:55)
+
+PASS tests/unit/services/ticket-service.test.ts
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 2 passed, 3 total
+Tests:       1 failed, 43 passed, 44 total
+Snapshots:   0 total
+Time:        0.763 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
