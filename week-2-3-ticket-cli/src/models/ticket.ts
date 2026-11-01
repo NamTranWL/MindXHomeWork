@@ -10,6 +10,7 @@ export interface NewTicketInput {
   title?: string;
   status?: string;
   priority?: string;
+  description?: string;
 }
 
 function oneOf<T extends string>(field: string, allowed: readonly T[], value: string): T {
@@ -34,6 +35,6 @@ export function parseNewTicket(input: NewTicketInput) {
     title,
     status: parseStatus(input.status ?? 'open'),
     priority: parsePriority(input.priority ?? 'medium'),
-    description: '',
+    description: input.description ?? '',
   };
 }
