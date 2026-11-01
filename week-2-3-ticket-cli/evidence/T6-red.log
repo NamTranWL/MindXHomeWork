@@ -1,0 +1,37 @@
+# T6 - red: T6 default priority is medium
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/models/ticket.test.ts
+  parseNewTicket - validate và chuẩn hoá input tạo ticket
+    ✓ T1: thiếu title → ValidationError "--title is required" (13 ms)
+    ✓ T2: title chỉ có khoảng trắng → ValidationError như T1 (2 ms)
+    ✓ T3: title được trim hai đầu (1 ms)
+    ✓ T4: không truyền status → "open" (1 ms)
+    ✓ T5: status ngoài open | in-progress | closed → ValidationError liệt kê giá trị hợp lệ (1 ms)
+    ✓ T5b: status hợp lệ (in-progress) được giữ nguyên
+    ✕ T6: không truyền priority → "medium" (2 ms)
+
+  ● parseNewTicket - validate và chuẩn hoá input tạo ticket › T6: không truyền priority → "medium"
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "medium"
+    Received: undefined
+
+      37 |
+      38 |   it('T6: không truyền priority → "medium"', () => {
+    > 39 |     expect(parseNewTicket({ title: 'x' }).priority).toBe('medium');
+         |                                                     ^
+      40 |   });
+      41 | });
+      42 |
+
+      at Object.<anonymous> (tests/unit/models/ticket.test.ts:39:53)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 6 passed, 7 total
+Snapshots:   0 total
+Time:        0.452 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

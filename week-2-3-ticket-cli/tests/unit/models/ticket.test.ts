@@ -34,4 +34,8 @@ describe('parseNewTicket - validate và chuẩn hoá input tạo ticket', () => 
   it('T5b: status hợp lệ (in-progress) được giữ nguyên', () => {
     expect(parseNewTicket({ title: 'x', status: 'in-progress' }).status).toBe('in-progress');
   });
+
+  it('T6: không truyền priority → "medium"', () => {
+    expect(parseNewTicket({ title: 'x' }).priority).toBe('medium');
+  });
 });
