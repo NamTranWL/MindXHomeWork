@@ -23,4 +23,11 @@ describe('parseNewTicket - validate và chuẩn hoá input tạo ticket', () => 
   it('T4: không truyền status → "open"', () => {
     expect(parseNewTicket({ title: 'x' }).status).toBe('open');
   });
+
+  it('T5: status ngoài open | in-progress | closed → ValidationError liệt kê giá trị hợp lệ', () => {
+    const act = () => parseNewTicket({ title: 'x', status: 'done' });
+
+    expect(act).toThrow(ValidationError);
+    expect(act).toThrow(/^invalid status "done"\. Allowed: open, in-progress, closed$/);
+  });
 });

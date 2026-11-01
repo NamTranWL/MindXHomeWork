@@ -1,0 +1,36 @@
+# T5 - red: T5 invalid status -> ValidationError listing allowed values
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/models/ticket.test.ts
+  parseNewTicket - validate và chuẩn hoá input tạo ticket
+    ✓ T1: thiếu title → ValidationError "--title is required" (12 ms)
+    ✓ T2: title chỉ có khoảng trắng → ValidationError như T1 (1 ms)
+    ✓ T3: title được trim hai đầu
+    ✓ T4: không truyền status → "open"
+    ✕ T5: status ngoài open | in-progress | closed → ValidationError liệt kê giá trị hợp lệ (1 ms)
+
+  ● parseNewTicket - validate và chuẩn hoá input tạo ticket › T5: status ngoài open | in-progress | closed → ValidationError liệt kê giá trị hợp lệ
+
+    expect(received).toThrow(expected)
+
+    Expected constructor: ValidationError
+
+    Received function did not throw
+
+      28 |     const act = () => parseNewTicket({ title: 'x', status: 'done' });
+      29 |
+    > 30 |     expect(act).toThrow(ValidationError);
+         |                 ^
+      31 |     expect(act).toThrow(/^invalid status "done"\. Allowed: open, in-progress, closed$/);
+      32 |   });
+      33 | });
+
+      at Object.<anonymous> (tests/unit/models/ticket.test.ts:30:17)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 4 passed, 5 total
+Snapshots:   0 total
+Time:        0.42 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
