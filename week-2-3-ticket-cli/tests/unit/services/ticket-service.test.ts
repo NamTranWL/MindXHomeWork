@@ -74,4 +74,8 @@ describe('TicketService.list', () => {
   it('T22: filter tag được chuẩn hoá trước khi so ("LMS" khớp "lms")', async () => {
     expect(ids(await service().list({ tags: [' LMS'] }))).toEqual([1, 3]);
   });
+
+  it('T23: không ticket nào khớp → []', async () => {
+    expect(await service().list({ status: 'closed', tags: ['login'] })).toEqual([]);
+  });
 });
