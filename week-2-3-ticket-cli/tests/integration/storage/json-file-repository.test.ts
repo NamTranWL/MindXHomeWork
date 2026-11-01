@@ -53,4 +53,14 @@ describe('JsonFileRepository (file thật trong thư mục tạm)', () => {
     await expect(promise).rejects.toThrow(exactly(`cannot read ${file} (invalid JSON)`));
     expect(await readFile(file, 'utf8')).toBe('{ not json');
   });
+
+  it('T37: JSON hợp lệ nhưng không phải mảng ({}) → StorageError, file giữ nguyên', async () => {
+    await writeFile(file, '{}', 'utf8');
+
+    const promise = new JsonFileRepository(file).load();
+
+    await expect(promise).rejects.toThrow(StorageError);
+    await expect(promise).rejects.toThrow(exactly(`cannot read ${file} (expected a JSON array)`));
+    expect(await readFile(file, 'utf8')).toBe('{}');
+  });
 });
