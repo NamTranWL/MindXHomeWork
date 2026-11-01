@@ -1,0 +1,30 @@
+# T3 - red: T3 title is trimmed
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/models/ticket.test.ts
+  parseNewTicket - validate và chuẩn hoá input tạo ticket
+    ✓ T1: thiếu title → ValidationError "--title is required" (11 ms)
+    ✓ T2: title chỉ có khoảng trắng → ValidationError như T1 (1 ms)
+    ✕ T3: title được trim hai đầu (1 ms)
+
+  ● parseNewTicket - validate và chuẩn hoá input tạo ticket › T3: title được trim hai đầu
+
+    --title is required
+
+       6 |
+       7 | export function parseNewTicket(_input: NewTicketInput) {
+    >  8 |   throw new ValidationError('--title is required');
+         |         ^
+       9 | }
+      10 |
+
+      at parseNewTicket (src/models/ticket.ts:8:9)
+      at Object.<anonymous> (tests/unit/models/ticket.test.ts:20:26)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 2 passed, 3 total
+Snapshots:   0 total
+Time:        0.416 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

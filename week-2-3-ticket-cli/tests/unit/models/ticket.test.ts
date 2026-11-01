@@ -15,4 +15,8 @@ describe('parseNewTicket - validate và chuẩn hoá input tạo ticket', () => 
     expect(act).toThrow(ValidationError);
     expect(act).toThrow(/^--title is required$/);
   });
+
+  it('T3: title được trim hai đầu', () => {
+    expect(parseNewTicket({ title: '  Login lỗi 500  ' }).title).toBe('Login lỗi 500');
+  });
 });
