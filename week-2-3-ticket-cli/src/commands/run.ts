@@ -70,6 +70,16 @@ export async function run(argv: string[], io: RunIO): Promise<number> {
       io.stdout(formatDetails(ticket));
     });
 
+  program
+    .command('update')
+    .description('change ticket status')
+    .argument('<id>')
+    .option('--status <status>')
+    .action(async (rawId: string, options: { status?: string }) => {
+      const ticket = await service.updateStatus(parseTicketId(rawId), options.status);
+      io.stdout(`Updated ticket #${ticket.id}: status = ${ticket.status}\n`);
+    });
+
   try {
     await program.parseAsync(argv, { from: 'user' });
     return 0;

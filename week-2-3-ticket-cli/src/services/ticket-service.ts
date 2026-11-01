@@ -6,7 +6,7 @@ import {
   type NewTicketInput,
   type Ticket,
 } from '../models/ticket';
-import { NotFoundError } from '../errors';
+import { NotFoundError, ValidationError } from '../errors';
 
 export interface TicketRepository {
   load(): Promise<Ticket[]>;
@@ -53,7 +53,8 @@ export class TicketService {
     return findOrThrow(tickets, id);
   }
 
-  async updateStatus(id: number, status: string): Promise<Ticket> {
+  async updateStatus(id: number, status: string | undefined): Promise<Ticket> {
+    if (status === undefined) throw new ValidationError('--status is required');
     const next = parseStatus(status);
     const tickets = await this.repo.load();
     const updated: Ticket = { ...findOrThrow(tickets, id), status: next };
