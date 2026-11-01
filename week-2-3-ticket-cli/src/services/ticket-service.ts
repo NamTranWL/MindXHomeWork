@@ -6,6 +6,7 @@ import {
   type NewTicketInput,
   type Ticket,
 } from '../models/ticket';
+import { NotFoundError } from '../errors';
 
 export interface TicketRepository {
   load(): Promise<Ticket[]>;
@@ -41,8 +42,10 @@ export class TicketService {
       .sort((a, b) => a.id - b.id);
   }
 
-  async get(id: number): Promise<Ticket | undefined> {
+  async get(id: number): Promise<Ticket> {
     const tickets = await this.repo.load();
-    return tickets.find((t) => t.id === id);
+    const found = tickets.find((t) => t.id === id);
+    if (!found) throw new NotFoundError(`ticket #${id} not found`);
+    return found;
   }
 }
