@@ -1,0 +1,41 @@
+# T10 - red: T10 normalizeTags trims, lowercases, drops empty and duplicates
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/models/ticket.test.ts
+  parseNewTicket - validate và chuẩn hoá input tạo ticket
+    ✓ T1: thiếu title → ValidationError "--title is required" (12 ms)
+    ✓ T2: title chỉ có khoảng trắng → ValidationError như T1 (1 ms)
+    ✓ T3: title được trim hai đầu
+    ✓ T4: không truyền status → "open"
+    ✓ T5: status ngoài open | in-progress | closed → ValidationError liệt kê giá trị hợp lệ (5 ms)
+    ✓ T5b: status hợp lệ (in-progress) được giữ nguyên (1 ms)
+    ✓ T6: không truyền priority → "medium" (1 ms)
+    ✓ T7: priority ngoài low | medium | high → ValidationError (1 ms)
+    ✓ T7b: priority hợp lệ (high) được giữ nguyên (1 ms)
+    ✓ T8: không truyền description → "" (1 ms)
+    ✓ T8b: có description → giữ nguyên, không trim (1 ms)
+    ✓ T9: không truyền tags → [] (1 ms)
+  normalizeTags - chuẩn hoá danh sách tag
+    ✕ T10: trim, lowercase, bỏ rỗng, bỏ trùng, giữ thứ tự xuất hiện đầu tiên (1 ms)
+
+  ● normalizeTags - chuẩn hoá danh sách tag › T10: trim, lowercase, bỏ rỗng, bỏ trùng, giữ thứ tự xuất hiện đầu tiên
+
+    TypeError: (0 , ticket_2.normalizeTags) is not a function
+
+      67 | describe('normalizeTags - chuẩn hoá danh sách tag', () => {
+      68 |   it('T10: trim, lowercase, bỏ rỗng, bỏ trùng, giữ thứ tự xuất hiện đầu tiên', () => {
+    > 69 |     expect(normalizeTags([' LMS ', 'login', '', '  ', 'lms', 'Bug'])).toEqual(['lms', 'login', 'bug']);
+         |                         ^
+      70 |   });
+      71 | });
+      72 |
+
+      at Object.<anonymous> (tests/unit/models/ticket.test.ts:69:25)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 12 passed, 13 total
+Snapshots:   0 total
+Time:        0.435 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

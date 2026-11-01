@@ -1,5 +1,6 @@
 import { parseNewTicket } from '../../../src/models/ticket';
 import { ValidationError } from '../../../src/errors';
+import { normalizeTags } from '../../../src/models/ticket';
 
 describe('parseNewTicket - validate và chuẩn hoá input tạo ticket', () => {
   it('T1: thiếu title → ValidationError "--title is required"', () => {
@@ -60,5 +61,11 @@ describe('parseNewTicket - validate và chuẩn hoá input tạo ticket', () => 
 
   it('T9: không truyền tags → []', () => {
     expect(parseNewTicket({ title: 'x' }).tags).toEqual([]);
+  });
+});
+
+describe('normalizeTags - chuẩn hoá danh sách tag', () => {
+  it('T10: trim, lowercase, bỏ rỗng, bỏ trùng, giữ thứ tự xuất hiện đầu tiên', () => {
+    expect(normalizeTags([' LMS ', 'login', '', '  ', 'lms', 'Bug'])).toEqual(['lms', 'login', 'bug']);
   });
 });
