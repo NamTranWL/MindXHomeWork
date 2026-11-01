@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { readFile, rename as fsRename, writeFile } from 'node:fs/promises';
+import { readFile, rename as fsRename, unlink, writeFile } from 'node:fs/promises';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { StorageError } from '../errors';
 import type { Ticket } from '../models/ticket';
@@ -36,7 +36,7 @@ export class JsonFileRepository implements TicketRepository {
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') return [];
       throw error;
     }
-    text = text.replace(/^﻿/, '');
+    text = text.replace(/^\uFEFF/, '');
     if (text.trim() === '') return [];
     let data: unknown;
     try {
@@ -53,7 +53,13 @@ export class JsonFileRepository implements TicketRepository {
   async save(tickets: Ticket[]): Promise<void> {
     const tempPath = `${this.filePath}.${process.pid}.${randomBytes(4).toString('hex')}.tmp`;
     await writeFile(tempPath, JSON.stringify(tickets, null, 2) + '\n', 'utf8');
-    await this.renameWithRetry(tempPath, this.filePath);
+    try {
+      await this.renameWithRetry(tempPath, this.filePath);
+    } catch (error) {
+      await unlink(tempPath).catch(() => undefined);
+      const code = (error as NodeJS.ErrnoException).code ?? 'unknown error';
+      throw new StorageError(`cannot write ${this.filePath} (${code})`);
+    }
   }
 
   private async renameWithRetry(from: string, to: string): Promise<void> {
