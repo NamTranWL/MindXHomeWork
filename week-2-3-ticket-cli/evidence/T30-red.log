@@ -1,0 +1,31 @@
+# T30 - red: T30 updateStatus invalid status -> ValidationError, no write
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/services/ticket-service.test.ts
+  ● TicketService.updateStatus › T30: status không hợp lệ → ValidationError, không ghi
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"description": "", "id": 1, "priority": "medium", "status": "done", "tags": [], "title": "Ticket 1"}
+
+      145 |     const promise = new TicketService(repo).updateStatus(1, 'done');
+      146 |
+    > 147 |     await expect(promise).rejects.toThrow(ValidationError);
+          |           ^
+      148 |     await expect(promise).rejects.toThrow(/^invalid status "done"\. Allowed: open, in-progress, closed$/);
+      149 |     expect(repo.saves).toEqual([]);
+      150 |   });
+
+      at expect (node_modules/expect/build/index.js:2116:15)
+      at Object.<anonymous> (tests/unit/services/ticket-service.test.ts:147:11)
+
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 38 passed, 39 total
+Snapshots:   0 total
+Time:        0.536 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

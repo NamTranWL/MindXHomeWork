@@ -139,4 +139,13 @@ describe('TicketService.updateStatus', () => {
     await expect(promise).rejects.toThrow(/^ticket #99 not found$/);
     expect(repo.saves).toEqual([]);
   });
+
+  it('T30: status không hợp lệ → ValidationError, không ghi', async () => {
+    const repo = new InMemoryTicketRepository(initial);
+    const promise = new TicketService(repo).updateStatus(1, 'done');
+
+    await expect(promise).rejects.toThrow(ValidationError);
+    await expect(promise).rejects.toThrow(/^invalid status "done"\. Allowed: open, in-progress, closed$/);
+    expect(repo.saves).toEqual([]);
+  });
 });
