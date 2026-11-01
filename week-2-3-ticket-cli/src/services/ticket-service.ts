@@ -1,4 +1,11 @@
-import { normalizeTags, parseNewTicket, type NewTicketInput, type Ticket } from '../models/ticket';
+import {
+  normalizeTags,
+  parseNewTicket,
+  parsePriority,
+  parseStatus,
+  type NewTicketInput,
+  type Ticket,
+} from '../models/ticket';
 
 export interface TicketRepository {
   load(): Promise<Ticket[]>;
@@ -23,11 +30,13 @@ export class TicketService {
   }
 
   async list(filter: ListFilter = {}): Promise<Ticket[]> {
+    const status = filter.status === undefined ? undefined : parseStatus(filter.status);
+    const priority = filter.priority === undefined ? undefined : parsePriority(filter.priority);
     const tags = normalizeTags(filter.tags ?? []);
     const tickets = await this.repo.load();
     return tickets
-      .filter((t) => filter.status === undefined || t.status === filter.status)
-      .filter((t) => filter.priority === undefined || t.priority === filter.priority)
+      .filter((t) => status === undefined || t.status === status)
+      .filter((t) => priority === undefined || t.priority === priority)
       .filter((t) => tags.every((tag) => t.tags.includes(tag)))
       .sort((a, b) => a.id - b.id);
   }
