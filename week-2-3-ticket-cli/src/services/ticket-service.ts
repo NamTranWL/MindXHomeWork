@@ -5,6 +5,10 @@ export interface TicketRepository {
   save(tickets: Ticket[]): Promise<void>;
 }
 
+export interface ListFilter {
+  status?: string;
+}
+
 export class TicketService {
   constructor(private readonly repo: TicketRepository) {}
 
@@ -16,8 +20,10 @@ export class TicketService {
     return created;
   }
 
-  async list(): Promise<Ticket[]> {
+  async list(filter: ListFilter = {}): Promise<Ticket[]> {
     const tickets = await this.repo.load();
-    return [...tickets].sort((a, b) => a.id - b.id);
+    return tickets
+      .filter((t) => filter.status === undefined || t.status === filter.status)
+      .sort((a, b) => a.id - b.id);
   }
 }
