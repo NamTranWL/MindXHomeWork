@@ -1,0 +1,31 @@
+# T29 - red: T29 updateStatus unknown id -> NotFoundError, no write
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/services/ticket-service.test.ts
+  ● TicketService.updateStatus › T29: id không tồn tại → NotFoundError, không ghi
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: undefined
+
+      136 |     const promise = new TicketService(repo).updateStatus(99, 'closed');
+      137 |
+    > 138 |     await expect(promise).rejects.toThrow(NotFoundError);
+          |           ^
+      139 |     await expect(promise).rejects.toThrow(/^ticket #99 not found$/);
+      140 |     expect(repo.saves).toEqual([]);
+      141 |   });
+
+      at expect (node_modules/expect/build/index.js:2116:15)
+      at Object.<anonymous> (tests/unit/services/ticket-service.test.ts:138:11)
+
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 37 passed, 38 total
+Snapshots:   0 total
+Time:        0.523 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

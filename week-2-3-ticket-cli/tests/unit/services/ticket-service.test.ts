@@ -130,4 +130,13 @@ describe('TicketService.updateStatus', () => {
 
     expect(updated.status).toBe('open');
   });
+
+  it('T29: id không tồn tại → NotFoundError, không ghi', async () => {
+    const repo = new InMemoryTicketRepository(initial);
+    const promise = new TicketService(repo).updateStatus(99, 'closed');
+
+    await expect(promise).rejects.toThrow(NotFoundError);
+    await expect(promise).rejects.toThrow(/^ticket #99 not found$/);
+    expect(repo.saves).toEqual([]);
+  });
 });
