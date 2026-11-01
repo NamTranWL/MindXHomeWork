@@ -36,5 +36,6 @@ export function parseNewTicket(input: NewTicketInput) {
     status: parseStatus(input.status ?? 'open'),
     priority: parsePriority(input.priority ?? 'medium'),
     description: input.description ?? '',
+    tags: [] as string[],
   };
 }
