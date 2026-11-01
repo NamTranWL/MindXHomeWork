@@ -4,6 +4,7 @@ import {
   parsePriority,
   parseStatus,
   type NewTicketInput,
+  type Status,
   type Ticket,
 } from '../models/ticket';
 import { NotFoundError } from '../errors';
@@ -47,5 +48,12 @@ export class TicketService {
     const found = tickets.find((t) => t.id === id);
     if (!found) throw new NotFoundError(`ticket #${id} not found`);
     return found;
+  }
+
+  async updateStatus(id: number, status: string): Promise<Ticket> {
+    const tickets = await this.repo.load();
+    const updated = tickets.map((t) => (t.id === id ? { ...t, status: status as Status } : t));
+    await this.repo.save(updated);
+    return updated.find((t) => t.id === id)!;
   }
 }
