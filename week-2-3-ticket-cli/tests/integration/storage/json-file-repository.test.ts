@@ -71,4 +71,10 @@ describe('JsonFileRepository (file thật trong thư mục tạm)', () => {
 
     expect(await new JsonFileRepository(file).load()).toEqual(tickets);
   });
+
+  it('T39: sau khi ghi, thư mục không còn file tạm', async () => {
+    await new JsonFileRepository(file).save([ticket({ id: 1 })]);
+
+    expect(await readdir(dir)).toEqual(['tickets.json']);
+  });
 });
