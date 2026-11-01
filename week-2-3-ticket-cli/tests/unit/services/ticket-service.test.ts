@@ -27,4 +27,12 @@ describe('TicketService.create', () => {
 
     expect(created.id).toBe(6);
   });
+
+  it('T15: input không hợp lệ → ValidationError, không đọc và không ghi', async () => {
+    const repo = new InMemoryTicketRepository();
+
+    await expect(new TicketService(repo).create({ title: '   ' })).rejects.toThrow(ValidationError);
+    expect(repo.loadCalls).toBe(0);
+    expect(repo.saves).toEqual([]);
+  });
 });
