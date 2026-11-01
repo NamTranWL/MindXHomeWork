@@ -1,0 +1,164 @@
+# T12 - red: T12 parseTicketId accepts only positive integers
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/models/ticket.test.ts
+  parseNewTicket - validate và chuẩn hoá input tạo ticket
+    ✓ T1: thiếu title → ValidationError "--title is required" (13 ms)
+    ✓ T2: title chỉ có khoảng trắng → ValidationError như T1 (1 ms)
+    ✓ T3: title được trim hai đầu (1 ms)
+    ✓ T4: không truyền status → "open" (4 ms)
+    ✓ T5: status ngoài open | in-progress | closed → ValidationError liệt kê giá trị hợp lệ (2 ms)
+    ✓ T5b: status hợp lệ (in-progress) được giữ nguyên (1 ms)
+    ✓ T6: không truyền priority → "medium" (1 ms)
+    ✓ T7: priority ngoài low | medium | high → ValidationError (1 ms)
+    ✓ T7b: priority hợp lệ (high) được giữ nguyên
+    ✓ T8: không truyền description → ""
+    ✓ T8b: có description → giữ nguyên, không trim (1 ms)
+    ✓ T9: không truyền tags → [] (1 ms)
+  normalizeTags - chuẩn hoá danh sách tag
+    ✓ T10: trim, lowercase, bỏ rỗng, bỏ trùng, giữ thứ tự xuất hiện đầu tiên (1 ms)
+    ✓ T11: tách chuỗi theo dấu phẩy: "a, B,a" → ["a","b"]
+  parseTicketId - validate id nhập từ dòng lệnh
+    ✕ T12: số nguyên dương → trả về number (1 ms)
+    ✕ T12: "abc" → ValidationError (12 ms)
+    ✕ T12: "0" → ValidationError (2 ms)
+    ✕ T12: "-1" → ValidationError (2 ms)
+    ✕ T12: "1.5" → ValidationError (2 ms)
+    ✕ T12: "01" → ValidationError (1 ms)
+
+  ● parseTicketId - validate id nhập từ dòng lệnh › T12: số nguyên dương → trả về number
+
+    TypeError: (0 , ticket_3.parseTicketId) is not a function
+
+      81 |
+      82 |   it('T12: số nguyên dương → trả về number', () => {
+    > 83 |     expect(parseTicketId('1')).toBe(1);
+         |                         ^
+      84 |     expect(parseTicketId('42')).toBe(42);
+      85 |   });
+      86 |
+
+      at Object.<anonymous> (tests/unit/models/ticket.test.ts:83:25)
+
+  ● parseTicketId - validate id nhập từ dòng lệnh › T12: "abc" → ValidationError
+
+    expect(received).toThrow(expected)
+
+    Expected constructor: ValidationError
+    Received constructor: TypeError
+
+    Received message: "(0 , ticket_3.parseTicketId) is not a function"
+
+          86 |
+          87 |   it.each(['abc', '0', '-1', '1.5', '01'])('T12: "%s" → ValidationError', (raw) => {
+        > 88 |     const act = () => parseTicketId(raw);
+             |                                    ^
+          89 |
+          90 |     expect(act).toThrow(ValidationError);
+          91 |     expect(act).toThrow(exactly(`invalid id "${raw}". Expected a positive integer`));
+
+      at act (tests/unit/models/ticket.test.ts:88:36)
+      at Object.<anonymous> (node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:2235:93)
+      at tests/unit/models/ticket.test.ts:90:17
+      at tests/unit/models/ticket.test.ts:90:17
+
+  ● parseTicketId - validate id nhập từ dòng lệnh › T12: "0" → ValidationError
+
+    expect(received).toThrow(expected)
+
+    Expected constructor: ValidationError
+    Received constructor: TypeError
+
+    Received message: "(0 , ticket_3.parseTicketId) is not a function"
+
+          86 |
+          87 |   it.each(['abc', '0', '-1', '1.5', '01'])('T12: "%s" → ValidationError', (raw) => {
+        > 88 |     const act = () => parseTicketId(raw);
+             |                                    ^
+          89 |
+          90 |     expect(act).toThrow(ValidationError);
+          91 |     expect(act).toThrow(exactly(`invalid id "${raw}". Expected a positive integer`));
+
+      at act (tests/unit/models/ticket.test.ts:88:36)
+      at Object.<anonymous> (node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:2235:93)
+      at tests/unit/models/ticket.test.ts:90:17
+      at tests/unit/models/ticket.test.ts:90:17
+
+  ● parseTicketId - validate id nhập từ dòng lệnh › T12: "-1" → ValidationError
+
+    expect(received).toThrow(expected)
+
+    Expected constructor: ValidationError
+    Received constructor: TypeError
+
+    Received message: "(0 , ticket_3.parseTicketId) is not a function"
+
+          86 |
+          87 |   it.each(['abc', '0', '-1', '1.5', '01'])('T12: "%s" → ValidationError', (raw) => {
+        > 88 |     const act = () => parseTicketId(raw);
+             |                                    ^
+          89 |
+          90 |     expect(act).toThrow(ValidationError);
+          91 |     expect(act).toThrow(exactly(`invalid id "${raw}". Expected a positive integer`));
+
+      at act (tests/unit/models/ticket.test.ts:88:36)
+      at Object.<anonymous> (node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:2235:93)
+      at tests/unit/models/ticket.test.ts:90:17
+      at tests/unit/models/ticket.test.ts:90:17
+
+  ● parseTicketId - validate id nhập từ dòng lệnh › T12: "1.5" → ValidationError
+
+    expect(received).toThrow(expected)
+
+    Expected constructor: ValidationError
+    Received constructor: TypeError
+
+    Received message: "(0 , ticket_3.parseTicketId) is not a function"
+
+          86 |
+          87 |   it.each(['abc', '0', '-1', '1.5', '01'])('T12: "%s" → ValidationError', (raw) => {
+        > 88 |     const act = () => parseTicketId(raw);
+             |                                    ^
+          89 |
+          90 |     expect(act).toThrow(ValidationError);
+          91 |     expect(act).toThrow(exactly(`invalid id "${raw}". Expected a positive integer`));
+
+      at act (tests/unit/models/ticket.test.ts:88:36)
+      at Object.<anonymous> (node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:2235:93)
+      at tests/unit/models/ticket.test.ts:90:17
+      at tests/unit/models/ticket.test.ts:90:17
+
+  ● parseTicketId - validate id nhập từ dòng lệnh › T12: "01" → ValidationError
+
+    expect(received).toThrow(expected)
+
+    Expected constructor: ValidationError
+    Received constructor: TypeError
+
+    Received message: "(0 , ticket_3.parseTicketId) is not a function"
+
+          86 |
+          87 |   it.each(['abc', '0', '-1', '1.5', '01'])('T12: "%s" → ValidationError', (raw) => {
+        > 88 |     const act = () => parseTicketId(raw);
+             |                                    ^
+          89 |
+          90 |     expect(act).toThrow(ValidationError);
+          91 |     expect(act).toThrow(exactly(`invalid id "${raw}". Expected a positive integer`));
+
+      at act (tests/unit/models/ticket.test.ts:88:36)
+      at Object.<anonymous> (node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:2235:93)
+      at tests/unit/models/ticket.test.ts:90:17
+      at tests/unit/models/ticket.test.ts:90:17
+
+Test Suites: 1 failed, 1 total
+Tests:       6 failed, 14 passed, 20 total
+Snapshots:   0 total
+Time:        0.485 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

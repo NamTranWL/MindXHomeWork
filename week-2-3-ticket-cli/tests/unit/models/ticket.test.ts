@@ -1,6 +1,7 @@
 import { parseNewTicket } from '../../../src/models/ticket';
 import { ValidationError } from '../../../src/errors';
 import { normalizeTags } from '../../../src/models/ticket';
+import { parseTicketId } from '../../../src/models/ticket';
 
 describe('parseNewTicket - validate và chuẩn hoá input tạo ticket', () => {
   it('T1: thiếu title → ValidationError "--title is required"', () => {
@@ -71,5 +72,22 @@ describe('normalizeTags - chuẩn hoá danh sách tag', () => {
 
   it('T11: tách chuỗi theo dấu phẩy: "a, B,a" → ["a","b"]', () => {
     expect(normalizeTags(['a, B,a'])).toEqual(['a', 'b']);
+  });
+});
+
+describe('parseTicketId - validate id nhập từ dòng lệnh', () => {
+  const exactly = (message: string) =>
+    new RegExp('^' + message.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$');
+
+  it('T12: số nguyên dương → trả về number', () => {
+    expect(parseTicketId('1')).toBe(1);
+    expect(parseTicketId('42')).toBe(42);
+  });
+
+  it.each(['abc', '0', '-1', '1.5', '01'])('T12: "%s" → ValidationError', (raw) => {
+    const act = () => parseTicketId(raw);
+
+    expect(act).toThrow(ValidationError);
+    expect(act).toThrow(exactly(`invalid id "${raw}". Expected a positive integer`));
   });
 });
