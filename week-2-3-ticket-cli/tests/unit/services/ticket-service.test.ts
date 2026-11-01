@@ -148,4 +148,13 @@ describe('TicketService.updateStatus', () => {
     await expect(promise).rejects.toThrow(/^invalid status "done"\. Allowed: open, in-progress, closed$/);
     expect(repo.saves).toEqual([]);
   });
+
+  it('T31: chỉ đổi ticket đích; ticket khác giữ nguyên', async () => {
+    const repo = new InMemoryTicketRepository(initial);
+
+    await new TicketService(repo).updateStatus(1, 'closed');
+
+    const saved = repo.saves.at(-1) ?? [];
+    expect(saved.filter((t) => t.id !== 1)).toEqual(initial.filter((t) => t.id !== 1));
+  });
 });
