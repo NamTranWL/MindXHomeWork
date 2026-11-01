@@ -1,0 +1,35 @@
+# create-T41-T48 - red: create command T41-T48
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/integration/commands/create.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../src/commands/run' from 'tests/helpers/cli.ts'
+
+    Require stack:
+      tests/helpers/cli.ts
+      tests/integration/commands/create.test.ts
+
+      4 | import { tmpdir } from 'node:os';
+      5 | import { join, resolve } from 'node:path';
+    > 6 | import { run } from '../../src/commands/run';
+        | ^
+      7 |
+      8 | export interface CliResult {
+      9 |   code: number;
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.<anonymous> (tests/helpers/cli.ts:6:1)
+      at Object.<anonymous> (tests/integration/commands/create.test.ts:3:1)
+
+PASS tests/integration/storage/json-file-repository.test.ts
+PASS tests/unit/models/ticket.test.ts
+PASS tests/unit/services/ticket-service.test.ts
+
+Test Suites: 1 failed, 3 passed, 4 total
+Tests:       51 passed, 51 total
+Snapshots:   0 total
+Time:        0.726 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
