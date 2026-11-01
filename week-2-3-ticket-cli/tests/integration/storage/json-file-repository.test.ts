@@ -29,4 +29,10 @@ describe('JsonFileRepository (file thật trong thư mục tạm)', () => {
 
     expect(await new JsonFileRepository(file).load()).toEqual([]);
   });
+
+  it('T34: file chỉ có khoảng trắng / xuống dòng → []', async () => {
+    await writeFile(file, '  \n\r\n\t ');
+
+    expect(await new JsonFileRepository(file).load()).toEqual([]);
+  });
 });
