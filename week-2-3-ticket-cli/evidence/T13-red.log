@@ -1,0 +1,26 @@
+# T13 - red: T13 create on empty list -> id 1 with all fields
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/services/ticket-service.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../src/services/ticket-service' from 'tests/unit/services/ticket-service.test.ts'
+
+    > 1 | import { TicketService } from '../../../src/services/ticket-service';
+        | ^
+      2 | import { ValidationError } from '../../../src/errors';
+      3 | import { InMemoryTicketRepository, ticket } from '../../helpers/in-memory-repository';
+      4 |
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.<anonymous> (tests/unit/services/ticket-service.test.ts:1:1)
+
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       20 passed, 20 total
+Snapshots:   0 total
+Time:        0.506 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
