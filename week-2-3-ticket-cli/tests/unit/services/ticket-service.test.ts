@@ -106,3 +106,20 @@ describe('TicketService.get', () => {
     await expect(promise).rejects.toThrow(/^ticket #99 not found$/);
   });
 });
+
+describe('TicketService.updateStatus', () => {
+  const initial = [
+    ticket({ id: 1, status: 'open' }),
+    ticket({ id: 2, status: 'in-progress', priority: 'high', tags: ['lms'] }),
+    ticket({ id: 3, status: 'closed' }),
+  ];
+
+  it('T27: thành công → trả ticket đã cập nhật và lưu lại', async () => {
+    const repo = new InMemoryTicketRepository(initial);
+
+    const updated = await new TicketService(repo).updateStatus(1, 'closed');
+
+    expect(updated).toEqual(ticket({ id: 1, status: 'closed' }));
+    expect(repo.saves.at(-1)?.find((t) => t.id === 1)?.status).toBe('closed');
+  });
+});

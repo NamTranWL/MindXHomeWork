@@ -1,0 +1,27 @@
+# T27 - red: T27 updateStatus returns and saves the updated ticket
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/services/ticket-service.test.ts
+  ● TicketService.updateStatus › T27: thành công → trả ticket đã cập nhật và lưu lại
+
+    TypeError: (intermediate value).updateStatus is not a function
+
+      118 |     const repo = new InMemoryTicketRepository(initial);
+      119 |
+    > 120 |     const updated = await new TicketService(repo).updateStatus(1, 'closed');
+          |                                                   ^
+      121 |
+      122 |     expect(updated).toEqual(ticket({ id: 1, status: 'closed' }));
+      123 |     expect(repo.saves.at(-1)?.find((t) => t.id === 1)?.status).toBe('closed');
+
+      at Object.<anonymous> (tests/unit/services/ticket-service.test.ts:120:51)
+
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 35 passed, 36 total
+Snapshots:   0 total
+Time:        0.532 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
