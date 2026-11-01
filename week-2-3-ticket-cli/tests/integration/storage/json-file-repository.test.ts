@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { JsonFileRepository } from '../../../src/storage/json-file-repository';
 import { ticket } from '../../helpers/in-memory-repository';
+import { StorageError } from '../../../src/errors';
 
 const exactly = (message: string) =>
   new RegExp('^' + message.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$');
@@ -41,5 +42,15 @@ describe('JsonFileRepository (file thật trong thư mục tạm)', () => {
     await writeFile(file, '﻿' + JSON.stringify(tickets), 'utf8');
 
     expect(await new JsonFileRepository(file).load()).toEqual(tickets);
+  });
+
+  it('T36: nội dung không phải JSON → StorageError, file giữ nguyên nội dung', async () => {
+    await writeFile(file, '{ not json', 'utf8');
+
+    const promise = new JsonFileRepository(file).load();
+
+    await expect(promise).rejects.toThrow(StorageError);
+    await expect(promise).rejects.toThrow(exactly(`cannot read ${file} (invalid JSON)`));
+    expect(await readFile(file, 'utf8')).toBe('{ not json');
   });
 });
