@@ -63,4 +63,12 @@ describe('JsonFileRepository (file thật trong thư mục tạm)', () => {
     await expect(promise).rejects.toThrow(exactly(`cannot read ${file} (expected a JSON array)`));
     expect(await readFile(file, 'utf8')).toBe('{}');
   });
+
+  it('T38: ghi rồi đọc lại → cùng dữ liệu (round-trip)', async () => {
+    const tickets = [ticket({ id: 1, title: 'Login lỗi 500', tags: ['lms'] }), ticket({ id: 2 })];
+
+    await new JsonFileRepository(file).save(tickets);
+
+    expect(await new JsonFileRepository(file).load()).toEqual(tickets);
+  });
 });

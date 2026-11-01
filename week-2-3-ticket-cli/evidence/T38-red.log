@@ -1,0 +1,53 @@
+# T38 - red: T38 save then load round-trips
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/integration/storage/json-file-repository.test.ts
+  ● JsonFileRepository (file thật trong thư mục tạm) › T38: ghi rồi đọc lại → cùng dữ liệu (round-trip)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 20
+    + Received  +  1
+
+    - Array [
+    -   Object {
+    -     "description": "",
+    -     "id": 1,
+    -     "priority": "medium",
+    -     "status": "open",
+    -     "tags": Array [
+    -       "lms",
+    -     ],
+    -     "title": "Login lỗi 500",
+    -   },
+    -   Object {
+    -     "description": "",
+    -     "id": 2,
+    -     "priority": "medium",
+    -     "status": "open",
+    -     "tags": Array [],
+    -     "title": "Ticket 2",
+    -   },
+    - ]
+    + Array []
+
+      70 |     await new JsonFileRepository(file).save(tickets);
+      71 |
+    > 72 |     expect(await new JsonFileRepository(file).load()).toEqual(tickets);
+         |                                                       ^
+      73 |   });
+      74 | });
+      75 |
+
+      at Object.<anonymous> (tests/integration/storage/json-file-repository.test.ts:72:55)
+
+PASS tests/unit/models/ticket.test.ts
+PASS tests/unit/services/ticket-service.test.ts
+
+Test Suites: 1 failed, 2 passed, 3 total
+Tests:       1 failed, 46 passed, 47 total
+Snapshots:   0 total
+Time:        0.589 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
