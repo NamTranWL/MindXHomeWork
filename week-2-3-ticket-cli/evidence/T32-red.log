@@ -1,0 +1,29 @@
+# T32 - red: T32 missing file loads as empty list
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/integration/storage/json-file-repository.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../src/storage/json-file-repository' from 'tests/integration/storage/json-file-repository.test.ts'
+
+      2 | import { tmpdir } from 'node:os';
+      3 | import { join } from 'node:path';
+    > 4 | import { JsonFileRepository } from '../../../src/storage/json-file-repository';
+        | ^
+      5 | import { ticket } from '../../helpers/in-memory-repository';
+      6 |
+      7 | const exactly = (message: string) =>
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.<anonymous> (tests/integration/storage/json-file-repository.test.ts:4:1)
+
+PASS tests/unit/services/ticket-service.test.ts
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 2 passed, 3 total
+Tests:       40 passed, 40 total
+Snapshots:   0 total
+Time:        0.621 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
