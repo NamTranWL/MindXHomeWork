@@ -1,0 +1,37 @@
+# T7b - red: T7b valid priority is kept
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/models/ticket.test.ts
+  parseNewTicket - validate và chuẩn hoá input tạo ticket
+    ✓ T1: thiếu title → ValidationError "--title is required" (12 ms)
+    ✓ T2: title chỉ có khoảng trắng → ValidationError như T1 (2 ms)
+    ✓ T3: title được trim hai đầu (1 ms)
+    ✓ T4: không truyền status → "open" (1 ms)
+    ✓ T5: status ngoài open | in-progress | closed → ValidationError liệt kê giá trị hợp lệ (1 ms)
+    ✓ T5b: status hợp lệ (in-progress) được giữ nguyên (5 ms)
+    ✓ T6: không truyền priority → "medium" (1 ms)
+    ✓ T7: priority ngoài low | medium | high → ValidationError (1 ms)
+    ✕ T7b: priority hợp lệ (high) được giữ nguyên
+
+  ● parseNewTicket - validate và chuẩn hoá input tạo ticket › T7b: priority hợp lệ (high) được giữ nguyên
+
+    invalid priority "high". Allowed: low, medium, high
+
+      22 |   }
+      23 |   if (input.priority !== undefined) {
+    > 24 |     throw new ValidationError(`invalid priority "${input.priority}". Allowed: low, medium, high`);
+         |           ^
+      25 |   }
+      26 |   return { title, status, priority: 'medium' };
+      27 | }
+
+      at parseNewTicket (src/models/ticket.ts:24:11)
+      at Object.<anonymous> (tests/unit/models/ticket.test.ts:50:26)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 8 passed, 9 total
+Snapshots:   0 total
+Time:        0.432 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

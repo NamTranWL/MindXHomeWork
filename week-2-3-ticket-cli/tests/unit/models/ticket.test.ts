@@ -45,4 +45,8 @@ describe('parseNewTicket - validate và chuẩn hoá input tạo ticket', () => 
     expect(act).toThrow(ValidationError);
     expect(act).toThrow(/^invalid priority "urgent"\. Allowed: low, medium, high$/);
   });
+
+  it('T7b: priority hợp lệ (high) được giữ nguyên', () => {
+    expect(parseNewTicket({ title: 'x', priority: 'high' }).priority).toBe('high');
+  });
 });
