@@ -40,4 +40,9 @@ export class TicketService {
       .filter((t) => tags.every((tag) => t.tags.includes(tag)))
       .sort((a, b) => a.id - b.id);
   }
+
+  async get(id: number): Promise<Ticket | undefined> {
+    const tickets = await this.repo.load();
+    return tickets.find((t) => t.id === id);
+  }
 }
