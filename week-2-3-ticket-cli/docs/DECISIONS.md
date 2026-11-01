@@ -15,7 +15,7 @@ Chốt ngày 2026-11-01, trước vòng TDD đầu tiên, theo workflow Solution
 | # | Quyết định | Đã chọn | Bị loại | Lý do | Rủi ro cần theo dõi |
 |---|---|---|---|---|---|
 | 1 | Ngôn ngữ | TypeScript | JavaScript | Tuần 3 dùng TS, tránh phải chuyển code giữa chừng | Mất thời gian sửa lỗi kiểu ở những vòng đầu |
-| 2 | Test runner | Jest + ts-jest | Vitest | Khớp với plan tuần 3 | Chưa quen Jest. ts-jest kiểm tra kiểu ở mỗi file test nên chậm hơn; nếu suite vượt ngân sách thì bật chế độ chỉ biên dịch (`isolatedModules`) |
+| 2 | Test runner | Jest + ts-jest ở chế độ chỉ biên dịch (`isolatedModules: true`); kiểm tra kiểu bằng `npm run typecheck` (`tsc --noEmit`) | Vitest; ts-jest kiểm tra kiểu trong lúc chạy test | Khớp với plan tuần 3. Chế độ chỉ biên dịch giúp test đỏ vì hành vi (assertion, "is not a function") thay vì cả file không biên dịch được, và chạy nhanh hơn | Lỗi kiểu không làm test đỏ: phải chạy `npm run typecheck` trước mỗi commit green |
 | 3 | Kiểu module | CommonJS | ESM | ESM trên Jest vẫn cần cờ thử nghiệm | Sau này nếu thêm thư viện chỉ hỗ trợ ESM thì phải cấu hình transform hoặc chọn thư viện khác |
 | 4 | Thư viện CLI | Commander | yargs, tự parse `process.argv` | Có sẵn subcommand và help; tuần 3 dùng Commander | Mặc định thoát với exit 1 và tự gọi `process.exit`, nên phải bật `exitOverride()` và tự map sang exit 2. Commander lưu option trên instance, nên mỗi lần chạy phải tạo `Command` mới |
 | 5 | Cách test lệnh | Kết hợp: phần lớn in-process qua `run(argv, io)`; T41, T44, T54, T56, T63, T64 chạy subprocess | Chỉ spawnSync; chỉ in-process | Vừa sát thực tế ở các đường lỗi, vừa giữ suite dưới 10 s | Thời gian mỗi lần spawn trên Windows mới là ước tính, cần đo bằng `Measure-Command`. Spawn phải đi qua `process.execPath --import tsx`, không gọi `.cmd`. `cli.ts` phải giữ thật mỏng |
@@ -32,6 +32,8 @@ Chốt ngày 2026-11-01, trước vòng TDD đầu tiên, theo workflow Solution
 | 16 | Filter tags | Chuẩn hoá như lúc `create`; truyền lặp lại thì gộp; rỗng thì không lọc | Không chuẩn hoá | Một quy tắc dùng chung cho cả tạo và lọc | Không có |
 | 17 | Ghi file | Ghi file tạm cùng thư mục rồi rename; khi gặp `EPERM`/`EACCES`/`EBUSY` thì thử lại tối đa 3 lần (50/100/200 ms); thất bại thì xoá file tạm và ném `StorageError` | Ghi đè trực tiếp | Không bao giờ để file bị cụt, nên quy tắc "file hỏng thì không ghi đè" không làm người dùng bị kẹt | Antivirus hoặc indexer khoá file lâu. Nhánh retry chỉ test được bằng `rename` giả, vì CI chạy Linux không tái hiện được |
 | 18 | Định dạng JSON khi ghi | Thụt lề 2 khoảng trắng, có xuống dòng cuối file | Một dòng | Dễ đọc và dễ diff khi mở file | Không có |
+| 20 | Phiên bản Commander | 14.0.3 | 15.x | Commander 15 chỉ hỗ trợ ESM và cần Node >= 22.12; dự án dùng CommonJS | Khi nâng cấp phải chuyển dự án sang ESM |
+| 21 | Message còn lại và định dạng output | Theo `SPEC.md` mục 1 (priority/id sai, sai cấu trúc, ghi lỗi, `list`/`show`/`update`) | Để mở tới lúc làm lớp command | Lớp model và storage cần message cụ thể để assert ngay | Đổi format sau này phải sửa test command |
 | 19 | Dọn thư mục tạm trong test | `fs.rm(..., { recursive, force, maxRetries: 3 })` | `rm` thường | Tránh test chập chờn vì Defender quét `%TEMP%` | Không có |
 
 ## Thay đổi đi kèm trong SPEC.md
@@ -43,6 +45,4 @@ Chốt ngày 2026-11-01, trước vòng TDD đầu tiên, theo workflow Solution
 
 ## Chưa chốt
 
-- Định dạng in của `list` / `show`, message khi `list` rỗng.
-- Message cho priority sai, id sai, file sai cấu trúc.
 - Đo thời gian một lần spawn trên Windows trước khi viết test subprocess đầu tiên. Ngân sách cả suite: dưới 10 s (theo dõi thủ công, không viết thành test).

@@ -78,8 +78,19 @@ Message đã chốt (output CLI):
 | Không tìm thấy | `Error: ticket #<id> not found` |
 | Status sai | `Error: invalid status "<value>". Allowed: open, in-progress, closed` |
 | JSON hỏng | `Error: cannot read <file> (invalid JSON)` |
+| Priority sai | `Error: invalid priority "<value>". Allowed: low, medium, high` |
+| ID sai | `Error: invalid id "<value>". Expected a positive integer` |
+| JSON sai cấu trúc | `Error: cannot read <file> (expected a JSON array)` |
+| Ghi file thất bại | `Error: cannot write <file> (<mã lỗi>)` |
+| Cập nhật thành công | `Updated ticket #<id>: status = <status>` |
+| `list` rỗng | `No tickets found` |
 
-Các message còn lại (priority sai, id sai, sai cấu trúc, `list` rỗng) và định dạng in của `list` / `show` chưa chốt.
+Lỗi do Commander phát hiện (lệnh/option lạ, thiếu giá trị option) giữ nguyên message gốc của Commander, exit 2.
+
+Định dạng in (mỗi dòng kết thúc bằng `\n`):
+- `list`: mỗi ticket một dòng `#<id> [<status>] [<priority>] <title>`, thêm ` (tags: a, b)` nếu có tag.
+- `show`: 6 dòng `ID: `, `Title: `, `Description: `, `Status: `, `Priority: `, `Tags: ` (tag nối bằng `, `); description hoặc tags rỗng in `-`.
+- `create` nhận thêm `--description` và `--status` (mặc định theo bảng dữ liệu).
 
 ## 2. Danh sách hành vi
 
@@ -91,13 +102,16 @@ Các message còn lại (priority sai, id sai, sai cấu trúc, `list` rỗng) v
 | T3 | Title được trim hai đầu |
 | T4 | Không truyền status → `open` (#1) |
 | T5 | Status ngoài `open \| in-progress \| closed` → `ValidationError`, message `invalid status "<value>". Allowed: open, in-progress, closed` (#5) |
+| T5b | Status hợp lệ (`in-progress`) được giữ nguyên |
 | T6 | Không truyền priority → `medium` |
-| T7 | Priority ngoài `low \| medium \| high` → `ValidationError` |
+| T7 | Priority ngoài `low \| medium \| high` → `ValidationError`, message `invalid priority "<value>". Allowed: low, medium, high` |
+| T7b | Priority hợp lệ (`high`) được giữ nguyên |
 | T8 | Không truyền description → `""` |
+| T8b | Có description → giữ nguyên, không trim |
 | T9 | Không truyền tags → `[]` |
 | T10 | Chuẩn hoá tags: trim, lowercase, bỏ rỗng (`a,,b`), bỏ trùng (`LMS, lms`), giữ thứ tự đầu tiên |
 | T11 | Tách chuỗi tags: `"a, B,a"` → `["a","b"]` |
-| T12 | ID hợp lệ là số nguyên dương; `abc`, `0`, `-1`, `1.5`, `01` → `ValidationError` |
+| T12 | ID hợp lệ là số nguyên dương; `abc`, `0`, `-1`, `1.5`, `01` → `ValidationError`, message `invalid id "<value>". Expected a positive integer` |
 
 ### Service — unit (storage giả trong bộ nhớ)
 | ID | Hành vi |
@@ -130,11 +144,11 @@ Các message còn lại (priority sai, id sai, sai cấu trúc, `list` rỗng) v
 | T34 | File chỉ có khoảng trắng / xuống dòng → `[]` |
 | T35 | File có BOM UTF-8 và JSON hợp lệ → đọc bình thường |
 | T36 | Nội dung không phải JSON → `StorageError`, file giữ nguyên nội dung (#6) |
-| T37 | JSON hợp lệ nhưng không phải mảng (`{}`) → `StorageError`, file giữ nguyên |
+| T37 | JSON hợp lệ nhưng không phải mảng (`{}`) → `StorageError` `cannot read <file> (expected a JSON array)`, file giữ nguyên |
 | T38 | Ghi rồi đọc lại → cùng dữ liệu (round-trip) |
 | T39 | Sau khi ghi, thư mục không còn file tạm |
 | T39a | Rename lỗi `EPERM` 2 lần rồi thành công → ghi thành công (rename giả) |
-| T39b | Rename lỗi mãi → `StorageError`; file gốc giữ nguyên; không còn file tạm (rename giả) |
+| T39b | Rename lỗi mãi → `StorageError` `cannot write <file> (EPERM)`; file gốc giữ nguyên; không còn file tạm (rename giả) |
 | T40 | Ghi khi thư mục cha chưa tồn tại → tự tạo thư mục, ghi thành công |
 
 ### Command — integration
@@ -144,6 +158,7 @@ Chạy in-process qua `run(argv, { env, stdout, stderr })`. Riêng T41, T44, T54
 | ID | Hành vi |
 |---|---|
 | T41 | `create --title "Login lỗi 500" --priority high` (file chưa có) → exit 0; stdout `Created ticket #1`; file `toEqual` `[{ id: 1, title: "Login lỗi 500", description: "", status: "open", priority: "high", tags: [] }]` (#1) |
+| T41b | `create --title x --description "  mô tả  " --status in-progress` → lưu đúng description (không trim) và status |
 | T42 | `create --tags "LMS, login,lms"` → lưu `["lms","login"]` |
 | T43 | `create --tags a,b --tags c` → lưu `["a","b","c"]` |
 | T44 | `create --priority high` (thiếu title) → exit 2; stderr `Error: --title is required`; stdout rỗng; file không bị tạo (#2) |
@@ -169,5 +184,4 @@ Chạy in-process qua `run(argv, { env, stdout, stderr })`. Riêng T41, T44, T54
 | T64 | `create` rồi `list` ở hai lần chạy riêng → dữ liệu còn |
 
 ## 3. Còn mở
-- Message và định dạng output chưa chốt (mục 1).
 - Đo thời gian một lần spawn trên Windows (`Measure-Command`) trước khi viết test subprocess đầu tiên. Ngân sách cả suite: dưới 10 s.
