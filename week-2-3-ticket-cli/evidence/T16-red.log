@@ -1,0 +1,27 @@
+# T16 - red: T16 list without filter returns all tickets sorted by id
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/services/ticket-service.test.ts
+  ● TicketService.list › T16: không filter → tất cả ticket, theo id tăng dần
+
+    TypeError: service(...).list is not a function
+
+      49 |
+      50 |   it('T16: không filter → tất cả ticket, theo id tăng dần', async () => {
+    > 51 |     expect(ids(await service().list())).toEqual([1, 2, 3, 4]);
+         |                                ^
+      52 |   });
+      53 | });
+      54 |
+
+      at Object.<anonymous> (tests/unit/services/ticket-service.test.ts:51:32)
+
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 23 passed, 24 total
+Snapshots:   0 total
+Time:        0.523 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

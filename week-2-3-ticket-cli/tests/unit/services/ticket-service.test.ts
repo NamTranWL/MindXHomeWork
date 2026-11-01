@@ -36,3 +36,18 @@ describe('TicketService.create', () => {
     expect(repo.saves).toEqual([]);
   });
 });
+
+describe('TicketService.list', () => {
+  const tickets = [
+    ticket({ id: 3, status: 'closed', priority: 'high', tags: ['lms'] }),
+    ticket({ id: 1, status: 'open', priority: 'high', tags: ['lms', 'login'] }),
+    ticket({ id: 2, status: 'open', priority: 'low', tags: ['login'] }),
+    ticket({ id: 4, status: 'in-progress', priority: 'medium', tags: [] }),
+  ];
+  const service = () => new TicketService(new InMemoryTicketRepository(tickets));
+  const ids = (list: { id: number }[]) => list.map((t) => t.id);
+
+  it('T16: không filter → tất cả ticket, theo id tăng dần', async () => {
+    expect(ids(await service().list())).toEqual([1, 2, 3, 4]);
+  });
+});
