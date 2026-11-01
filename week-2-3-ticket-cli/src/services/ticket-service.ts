@@ -52,8 +52,10 @@ export class TicketService {
 
   async updateStatus(id: number, status: string): Promise<Ticket> {
     const tickets = await this.repo.load();
-    const updated = tickets.map((t) => (t.id === id ? { ...t, status: status as Status } : t));
-    await this.repo.save(updated);
-    return updated.find((t) => t.id === id)!;
+    const target = tickets.find((t) => t.id === id);
+    if (!target) throw new NotFoundError(`ticket #${id} not found`);
+    const updated: Ticket = { ...target, status: status as Status };
+    await this.repo.save(tickets.map((t) => (t.id === id ? updated : t)));
+    return updated;
   }
 }
