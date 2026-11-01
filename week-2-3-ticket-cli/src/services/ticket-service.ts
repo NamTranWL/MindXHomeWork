@@ -11,7 +11,7 @@ export class TicketService {
   async create(input: NewTicketInput): Promise<Ticket> {
     const data = parseNewTicket(input);
     const tickets = await this.repo.load();
-    const created: Ticket = { id: 1, ...data };
+    const created: Ticket = { id: Math.max(0, ...tickets.map((t) => t.id)) + 1, ...data };
     await this.repo.save([...tickets, created]);
     return created;
   }
