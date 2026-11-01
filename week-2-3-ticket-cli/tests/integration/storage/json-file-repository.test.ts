@@ -92,4 +92,19 @@ describe('JsonFileRepository (file thật trong thư mục tạm)', () => {
     expect(calls).toBe(3);
     expect(await new JsonFileRepository(file).load()).toEqual([ticket({ id: 1 })]);
   });
+
+  it('T39b: rename lỗi mãi → StorageError, file gốc giữ nguyên, không còn file tạm', async () => {
+    await writeFile(file, '[]', 'utf8');
+    const failingRename = async () => {
+      throw Object.assign(new Error('EPERM: operation not permitted'), { code: 'EPERM' });
+    };
+    const repo = new JsonFileRepository(file, { rename: failingRename, retryDelaysMs: [0, 0, 0] });
+
+    const promise = repo.save([ticket({ id: 1 })]);
+
+    await expect(promise).rejects.toThrow(StorageError);
+    await expect(promise).rejects.toThrow(exactly(`cannot write ${file} (EPERM)`));
+    expect(await readFile(file, 'utf8')).toBe('[]');
+    expect(await readdir(dir)).toEqual(['tickets.json']);
+  });
 });

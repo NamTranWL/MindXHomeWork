@@ -1,0 +1,38 @@
+# T39b - red: T39b rename keeps failing -> StorageError, original kept, temp removed
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/integration/storage/json-file-repository.test.ts
+  ● JsonFileRepository (file thật trong thư mục tạm) › T39b: rename lỗi mãi → StorageError, file gốc giữ nguyên, không còn file tạm
+
+    expect(received).rejects.toThrow(expected)
+
+    Expected constructor: StorageError
+    Received constructor: Error
+
+    Received message: "EPERM: operation not permitted"
+
+           97 |     await writeFile(file, '[]', 'utf8');
+           98 |     const failingRename = async () => {
+        >  99 |       throw Object.assign(new Error('EPERM: operation not permitted'), { code: 'EPERM' });
+              |                           ^
+          100 |     };
+          101 |     const repo = new JsonFileRepository(file, { rename: failingRename, retryDelaysMs: [0, 0, 0] });
+          102 |
+
+      at JsonFileRepository.failingRename [as rename] (tests/integration/storage/json-file-repository.test.ts:99:27)
+      at JsonFileRepository.renameWithRetry (src/storage/json-file-repository.ts:62:20)
+      at JsonFileRepository.save (src/storage/json-file-repository.ts:56:5)
+      at Object.<anonymous> (tests/integration/storage/json-file-repository.test.ts:105:5)
+      at Object.toThrow (node_modules/expect/build/index.js:2155:20)
+      at Object.<anonymous> (tests/integration/storage/json-file-repository.test.ts:105:35)
+
+PASS tests/unit/services/ticket-service.test.ts
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 2 passed, 3 total
+Tests:       1 failed, 49 passed, 50 total
+Snapshots:   0 total
+Time:        0.699 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
