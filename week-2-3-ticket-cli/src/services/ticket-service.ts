@@ -4,7 +4,6 @@ import {
   parsePriority,
   parseStatus,
   type NewTicketInput,
-  type Status,
   type Ticket,
 } from '../models/ticket';
 import { NotFoundError } from '../errors';
@@ -55,8 +54,9 @@ export class TicketService {
   }
 
   async updateStatus(id: number, status: string): Promise<Ticket> {
+    const next = parseStatus(status);
     const tickets = await this.repo.load();
-    const updated: Ticket = { ...findOrThrow(tickets, id), status: status as Status };
+    const updated: Ticket = { ...findOrThrow(tickets, id), status: next };
     await this.repo.save(tickets.map((t) => (t.id === id ? updated : t)));
     return updated;
   }
