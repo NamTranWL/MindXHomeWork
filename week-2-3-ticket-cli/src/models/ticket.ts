@@ -48,3 +48,10 @@ export function normalizeTags(values: string[]): string[] {
   }
   return result;
 }
+
+export function parseTicketId(raw: string): number {
+  if (!/^[1-9]\d*$/.test(raw)) {
+    throw new ValidationError(`invalid id "${raw}". Expected a positive integer`);
+  }
+  return Number(raw);
+}
