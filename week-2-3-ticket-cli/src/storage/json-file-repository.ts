@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
-import { readFile, rename as fsRename, unlink, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rename as fsRename, unlink, writeFile } from 'node:fs/promises';
+import { dirname } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { StorageError } from '../errors';
 import type { Ticket } from '../models/ticket';
@@ -51,6 +52,7 @@ export class JsonFileRepository implements TicketRepository {
   }
 
   async save(tickets: Ticket[]): Promise<void> {
+    await mkdir(dirname(this.filePath), { recursive: true });
     const tempPath = `${this.filePath}.${process.pid}.${randomBytes(4).toString('hex')}.tmp`;
     await writeFile(tempPath, JSON.stringify(tickets, null, 2) + '\n', 'utf8');
     try {
