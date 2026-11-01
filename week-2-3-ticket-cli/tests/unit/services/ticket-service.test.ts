@@ -1,6 +1,7 @@
 import { TicketService } from '../../../src/services/ticket-service';
 import { ValidationError } from '../../../src/errors';
 import { InMemoryTicketRepository, ticket } from '../../helpers/in-memory-repository';
+import { NotFoundError } from '../../../src/errors';
 
 describe('TicketService.create', () => {
   it('T13: danh sách rỗng → id = 1, ticket đủ 6 field và được lưu', async () => {
@@ -96,5 +97,12 @@ describe('TicketService.get', () => {
 
   it('T25: id tồn tại → trả đúng ticket', async () => {
     expect(await service().get(2)).toEqual(ticket({ id: 2, title: 'Thứ hai' }));
+  });
+
+  it('T26: id không tồn tại → NotFoundError "ticket #99 not found"', async () => {
+    const promise = service().get(99);
+
+    await expect(promise).rejects.toThrow(NotFoundError);
+    await expect(promise).rejects.toThrow(/^ticket #99 not found$/);
   });
 });

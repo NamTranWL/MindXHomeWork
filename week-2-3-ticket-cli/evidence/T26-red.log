@@ -1,0 +1,31 @@
+# T26 - red: T26 get unknown id -> NotFoundError
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/services/ticket-service.test.ts
+  ● TicketService.get › T26: id không tồn tại → NotFoundError "ticket #99 not found"
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: undefined
+
+      103 |     const promise = service().get(99);
+      104 |
+    > 105 |     await expect(promise).rejects.toThrow(NotFoundError);
+          |           ^
+      106 |     await expect(promise).rejects.toThrow(/^ticket #99 not found$/);
+      107 |   });
+      108 | });
+
+      at expect (node_modules/expect/build/index.js:2116:15)
+      at Object.<anonymous> (tests/unit/services/ticket-service.test.ts:105:11)
+
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 34 passed, 35 total
+Snapshots:   0 total
+Time:        0.524 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
