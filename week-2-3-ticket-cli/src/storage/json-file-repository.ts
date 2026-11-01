@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { StorageError } from '../errors';
 import type { Ticket } from '../models/ticket';
 import type { TicketRepository } from '../services/ticket-service';
@@ -28,5 +28,7 @@ export class JsonFileRepository implements TicketRepository {
     return data;
   }
 
-  async save(_tickets: Ticket[]): Promise<void> {}
+  async save(tickets: Ticket[]): Promise<void> {
+    await writeFile(this.filePath, JSON.stringify(tickets, null, 2) + '\n', 'utf8');
+  }
 }
