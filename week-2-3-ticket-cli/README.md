@@ -45,6 +45,8 @@ $env:TICKETS_FILE = "$HOME\tickets.json"
 
 ### Sử dụng
 
+Hướng dẫn đầy đủ (mọi option, output, thông báo lỗi, xử lý sự cố): `docs/USAGE.md`.
+
 ```powershell
 tickets create --title "Login lỗi 500" --priority high --tags "LMS, login"
 # Created ticket #1
