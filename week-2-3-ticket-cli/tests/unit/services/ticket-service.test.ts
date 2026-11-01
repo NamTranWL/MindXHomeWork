@@ -122,4 +122,12 @@ describe('TicketService.updateStatus', () => {
     expect(updated).toEqual(ticket({ id: 1, status: 'closed' }));
     expect(repo.saves.at(-1)?.find((t) => t.id === 1)?.status).toBe('closed');
   });
+
+  it('T28: đổi sang đúng status hiện tại → vẫn thành công', async () => {
+    const repo = new InMemoryTicketRepository(initial);
+
+    const updated = await new TicketService(repo).updateStatus(1, 'open');
+
+    expect(updated.status).toBe('open');
+  });
 });
