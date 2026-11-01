@@ -1,0 +1,125 @@
+# show-T55-T57 - red: show command T55-T57
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/integration/commands/show.test.ts
+  ● tickets show › T55: show 1 → in đủ 6 field, exit 0; field rỗng in "-"
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 8
+    + Received  + 3
+
+      Object {
+    -   "code": 0,
+    -   "stderr": "",
+    -   "stdout": "ID: 1
+    - Title: Login lỗi 500
+    - Description: Lỗi khi đăng nhập
+    - Status: open
+    - Priority: high
+    - Tags: lms, login
+    +   "code": 2,
+    +   "stderr": "error: unknown command 'show'
+      ",
+    +   "stdout": "",
+      }
+
+      25 |     const empty = await runCli(['show', '2'], { TICKETS_FILE: file });
+      26 |
+    > 27 |     expect(full).toEqual({
+         |                  ^
+      28 |       code: 0,
+      29 |       stdout:
+      30 |         'ID: 1\nTitle: Login lỗi 500\nDescription: Lỗi khi đăng nhập\nStatus: open\nPriority: high\nTags: lms, login\n',
+
+      at Object.<anonymous> (tests/integration/commands/show.test.ts:27:18)
+
+  ● tickets show › T56: show 99 → exit 1, stderr "Error: ticket #99 not found", không có stack trace (subprocess)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   "code": 1,
+    -   "stderr": "Error: ticket #99 not found
+    +   "code": 2,
+    +   "stderr": "error: unknown command 'show'
+      ",
+        "stdout": "",
+      }
+
+      41 |       const result = runCliProcess(['show', '99'], { TICKETS_FILE: file });
+      42 |
+    > 43 |       expect(result).toEqual({ code: 1, stdout: '', stderr: 'Error: ticket #99 not found\n' });
+         |                      ^
+      44 |     },
+      45 |     SUBPROCESS_TIMEOUT_MS,
+      46 |   );
+
+      at Object.<anonymous> (tests/integration/commands/show.test.ts:43:22)
+
+  ● tickets show › T57: show abc → exit 2
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "code": 2,
+    -   "stderr": "Error: invalid id \"abc\". Expected a positive integer
+    +   "stderr": "error: unknown command 'show'
+      ",
+        "stdout": "",
+      }
+
+      49 |     const result = await runCli(['show', raw], { TICKETS_FILE: file });
+      50 |
+    > 51 |     expect(result).toEqual({
+         |                    ^
+      52 |       code: 2,
+      53 |       stdout: '',
+      54 |       stderr: `Error: invalid id "${raw}". Expected a positive integer\n`,
+
+      at tests/integration/commands/show.test.ts:51:20
+
+  ● tickets show › T57: show 0 → exit 2
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "code": 2,
+    -   "stderr": "Error: invalid id \"0\". Expected a positive integer
+    +   "stderr": "error: unknown command 'show'
+      ",
+        "stdout": "",
+      }
+
+      49 |     const result = await runCli(['show', raw], { TICKETS_FILE: file });
+      50 |
+    > 51 |     expect(result).toEqual({
+         |                    ^
+      52 |       code: 2,
+      53 |       stdout: '',
+      54 |       stderr: `Error: invalid id "${raw}". Expected a positive integer\n`,
+
+      at tests/integration/commands/show.test.ts:51:20
+
+PASS tests/integration/commands/list.test.ts
+PASS tests/integration/commands/create.test.ts
+PASS tests/integration/storage/json-file-repository.test.ts
+PASS tests/unit/services/ticket-service.test.ts
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 5 passed, 6 total
+Tests:       4 failed, 66 passed, 70 total
+Snapshots:   0 total
+Time:        1.426 s, estimated 2 s
+Ran all test suites.
+Test results written to: ../jest.json
