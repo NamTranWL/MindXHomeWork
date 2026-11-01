@@ -49,4 +49,8 @@ describe('parseNewTicket - validate và chuẩn hoá input tạo ticket', () => 
   it('T7b: priority hợp lệ (high) được giữ nguyên', () => {
     expect(parseNewTicket({ title: 'x', priority: 'high' }).priority).toBe('high');
   });
+
+  it('T8: không truyền description → ""', () => {
+    expect(parseNewTicket({ title: 'x' }).description).toBe('');
+  });
 });

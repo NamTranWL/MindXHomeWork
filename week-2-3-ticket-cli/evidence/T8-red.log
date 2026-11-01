@@ -1,0 +1,40 @@
+# T8 - red: T8 default description is empty string
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/models/ticket.test.ts
+  parseNewTicket - validate và chuẩn hoá input tạo ticket
+    ✓ T1: thiếu title → ValidationError "--title is required" (11 ms)
+    ✓ T2: title chỉ có khoảng trắng → ValidationError như T1 (1 ms)
+    ✓ T3: title được trim hai đầu
+    ✓ T4: không truyền status → "open"
+    ✓ T5: status ngoài open | in-progress | closed → ValidationError liệt kê giá trị hợp lệ (2 ms)
+    ✓ T5b: status hợp lệ (in-progress) được giữ nguyên (1 ms)
+    ✓ T6: không truyền priority → "medium" (1 ms)
+    ✓ T7: priority ngoài low | medium | high → ValidationError (2 ms)
+    ✓ T7b: priority hợp lệ (high) được giữ nguyên (1 ms)
+    ✕ T8: không truyền description → "" (2 ms)
+
+  ● parseNewTicket - validate và chuẩn hoá input tạo ticket › T8: không truyền description → ""
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: ""
+    Received: undefined
+
+      52 |
+      53 |   it('T8: không truyền description → ""', () => {
+    > 54 |     expect(parseNewTicket({ title: 'x' }).description).toBe('');
+         |                                                        ^
+      55 |   });
+      56 | });
+      57 |
+
+      at Object.<anonymous> (tests/unit/models/ticket.test.ts:54:56)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 9 passed, 10 total
+Snapshots:   0 total
+Time:        0.437 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json
