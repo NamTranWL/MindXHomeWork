@@ -1,0 +1,42 @@
+# T9 - red: T9 default tags is empty array
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/models/ticket.test.ts
+  parseNewTicket - validate và chuẩn hoá input tạo ticket
+    ✓ T1: thiếu title → ValidationError "--title is required" (12 ms)
+    ✓ T2: title chỉ có khoảng trắng → ValidationError như T1 (1 ms)
+    ✓ T3: title được trim hai đầu (1 ms)
+    ✓ T4: không truyền status → "open" (1 ms)
+    ✓ T5: status ngoài open | in-progress | closed → ValidationError liệt kê giá trị hợp lệ (6 ms)
+    ✓ T5b: status hợp lệ (in-progress) được giữ nguyên (1 ms)
+    ✓ T6: không truyền priority → "medium"
+    ✓ T7: priority ngoài low | medium | high → ValidationError (2 ms)
+    ✓ T7b: priority hợp lệ (high) được giữ nguyên (1 ms)
+    ✓ T8: không truyền description → "" (1 ms)
+    ✓ T8b: có description → giữ nguyên, không trim
+    ✕ T9: không truyền tags → [] (2 ms)
+
+  ● parseNewTicket - validate và chuẩn hoá input tạo ticket › T9: không truyền tags → []
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: []
+    Received: undefined
+
+      60 |
+      61 |   it('T9: không truyền tags → []', () => {
+    > 62 |     expect(parseNewTicket({ title: 'x' }).tags).toEqual([]);
+         |                                                 ^
+      63 |   });
+      64 | });
+      65 |
+
+      at Object.<anonymous> (tests/unit/models/ticket.test.ts:62:49)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 11 passed, 12 total
+Snapshots:   0 total
+Time:        0.443 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

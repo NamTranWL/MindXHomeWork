@@ -57,4 +57,8 @@ describe('parseNewTicket - validate và chuẩn hoá input tạo ticket', () => 
   it('T8b: có description → giữ nguyên, không trim', () => {
     expect(parseNewTicket({ title: 'x', description: '  mô tả  ' }).description).toBe('  mô tả  ');
   });
+
+  it('T9: không truyền tags → []', () => {
+    expect(parseNewTicket({ title: 'x' }).tags).toEqual([]);
+  });
 });
