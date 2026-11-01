@@ -23,4 +23,10 @@ describe('JsonFileRepository (file thật trong thư mục tạm)', () => {
   it('T32: file không tồn tại → đọc ra []', async () => {
     expect(await new JsonFileRepository(file).load()).toEqual([]);
   });
+
+  it('T33: file 0 byte → []', async () => {
+    await writeFile(file, '');
+
+    expect(await new JsonFileRepository(file).load()).toEqual([]);
+  });
 });
