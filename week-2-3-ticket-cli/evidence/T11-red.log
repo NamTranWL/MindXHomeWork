@@ -1,0 +1,51 @@
+# T11 - red: T11 normalizeTags splits comma-separated values
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/unit/models/ticket.test.ts
+  parseNewTicket - validate và chuẩn hoá input tạo ticket
+    ✓ T1: thiếu title → ValidationError "--title is required" (13 ms)
+    ✓ T2: title chỉ có khoảng trắng → ValidationError như T1 (2 ms)
+    ✓ T3: title được trim hai đầu (1 ms)
+    ✓ T4: không truyền status → "open" (1 ms)
+    ✓ T5: status ngoài open | in-progress | closed → ValidationError liệt kê giá trị hợp lệ (2 ms)
+    ✓ T5b: status hợp lệ (in-progress) được giữ nguyên (1 ms)
+    ✓ T6: không truyền priority → "medium"
+    ✓ T7: priority ngoài low | medium | high → ValidationError (6 ms)
+    ✓ T7b: priority hợp lệ (high) được giữ nguyên (1 ms)
+    ✓ T8: không truyền description → "" (1 ms)
+    ✓ T8b: có description → giữ nguyên, không trim
+    ✓ T9: không truyền tags → [] (1 ms)
+  normalizeTags - chuẩn hoá danh sách tag
+    ✓ T10: trim, lowercase, bỏ rỗng, bỏ trùng, giữ thứ tự xuất hiện đầu tiên
+    ✕ T11: tách chuỗi theo dấu phẩy: "a, B,a" → ["a","b"] (3 ms)
+
+  ● normalizeTags - chuẩn hoá danh sách tag › T11: tách chuỗi theo dấu phẩy: "a, B,a" → ["a","b"]
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 1
+
+      Array [
+    -   "a",
+    -   "b",
+    +   "a, b,a",
+      ]
+
+      71 |
+      72 |   it('T11: tách chuỗi theo dấu phẩy: "a, B,a" → ["a","b"]', () => {
+    > 73 |     expect(normalizeTags(['a, B,a'])).toEqual(['a', 'b']);
+         |                                       ^
+      74 |   });
+      75 | });
+      76 |
+
+      at Object.<anonymous> (tests/unit/models/ticket.test.ts:73:39)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 13 passed, 14 total
+Snapshots:   0 total
+Time:        0.447 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../jest.json

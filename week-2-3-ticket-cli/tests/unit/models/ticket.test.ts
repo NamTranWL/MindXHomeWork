@@ -68,4 +68,8 @@ describe('normalizeTags - chuẩn hoá danh sách tag', () => {
   it('T10: trim, lowercase, bỏ rỗng, bỏ trùng, giữ thứ tự xuất hiện đầu tiên', () => {
     expect(normalizeTags([' LMS ', 'login', '', '  ', 'lms', 'Bug'])).toEqual(['lms', 'login', 'bug']);
   });
+
+  it('T11: tách chuỗi theo dấu phẩy: "a, B,a" → ["a","b"]', () => {
+    expect(normalizeTags(['a, B,a'])).toEqual(['a', 'b']);
+  });
 });
