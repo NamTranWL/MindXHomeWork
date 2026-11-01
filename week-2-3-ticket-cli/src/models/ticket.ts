@@ -7,5 +7,5 @@ export interface NewTicketInput {
 export function parseNewTicket(input: NewTicketInput) {
   const title = input.title?.trim();
   if (!title) throw new ValidationError('--title is required');
-  return { title };
+  return { title, status: 'open' };
 }
