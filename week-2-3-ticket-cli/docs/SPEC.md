@@ -75,6 +75,7 @@ Message đã chốt (output CLI):
 |---|---|
 | Tạo thành công | `Created ticket #<id>` |
 | Thiếu title | `Error: --title is required` |
+| Thiếu `--status` ở `update` | `Error: --status is required` |
 | Không tìm thấy | `Error: ticket #<id> not found` |
 | Status sai | `Error: invalid status "<value>". Allowed: open, in-progress, closed` |
 | JSON hỏng | `Error: cannot read <file> (invalid JSON)` |
@@ -178,7 +179,7 @@ Chạy in-process qua `run(argv, { env, stdout, stderr })`. Riêng T41, T44, T54
 | T58 | `update 1 --status closed` → exit 0; file được cập nhật |
 | T59 | `update 1 --status open` khi ticket đang `open` → exit 0 |
 | T60 | `update 1 --status done` → exit 2; stderr `Error: invalid status "done". Allowed: open, in-progress, closed`; file không đổi (#5) |
-| T61 | `update 1` (thiếu `--status`) → exit 2 |
+| T61 | `update 1` (thiếu `--status`) → exit 2; stderr `Error: --status is required` |
 | T62 | `update 99 --status closed` → exit 1 |
 | T63 | Lệnh không tồn tại hoặc option lạ → exit 2 |
 | T64 | `create` rồi `list` ở hai lần chạy riêng → dữ liệu còn |
