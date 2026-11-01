@@ -6,6 +6,7 @@ export type Status = (typeof STATUSES)[number];
 export interface NewTicketInput {
   title?: string;
   status?: string;
+  priority?: string;
 }
 
 function isStatus(value: string): value is Status {
@@ -18,6 +19,9 @@ export function parseNewTicket(input: NewTicketInput) {
   const status = input.status ?? 'open';
   if (!isStatus(status)) {
     throw new ValidationError(`invalid status "${status}". Allowed: ${STATUSES.join(', ')}`);
+  }
+  if (input.priority !== undefined) {
+    throw new ValidationError(`invalid priority "${input.priority}". Allowed: low, medium, high`);
   }
   return { title, status, priority: 'medium' };
 }
