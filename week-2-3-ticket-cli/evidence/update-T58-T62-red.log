@@ -1,0 +1,153 @@
+# update-T58-T62 - red: update command T58-T62
+# Lệnh: npx jest   |   Exit code: 1
+# Chạy 2026-11-01 trong máy ảo Linux (Node v22.23.4), trên cây file của commit này.
+
+FAIL tests/integration/commands/update.test.ts
+  ● tickets update › T58: update 1 --status closed → exit 0, file được cập nhật
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 4
+
+      Object {
+    -   "code": 0,
+    -   "stderr": "",
+    -   "stdout": "Updated ticket #1: status = closed
+    +   "code": 2,
+    +   "stderr": "error: unknown command 'update'
+    + (Did you mean create?)
+      ",
+    +   "stdout": "",
+      }
+
+      24 |     const result = await runCli(['update', '1', '--status', 'closed'], { TICKETS_FILE: file });
+      25 |
+    > 26 |     expect(result).toEqual({ code: 0, stdout: 'Updated ticket #1: status = closed\n', stderr: '' });
+         |                    ^
+      27 |     expect(readJson(file)).toEqual([
+      28 |       expect.objectContaining({ id: 1, status: 'closed' }),
+      29 |       expect.objectContaining({ id: 2, status: 'in-progress' }),
+
+      at Object.<anonymous> (tests/integration/commands/update.test.ts:26:20)
+
+  ● tickets update › T59: update 1 --status open khi đang open → exit 0
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 4
+
+      Object {
+    -   "code": 0,
+    -   "stderr": "",
+    -   "stdout": "Updated ticket #1: status = open
+    +   "code": 2,
+    +   "stderr": "error: unknown command 'update'
+    + (Did you mean create?)
+      ",
+    +   "stdout": "",
+      }
+
+      34 |     const result = await runCli(['update', '1', '--status', 'open'], { TICKETS_FILE: file });
+      35 |
+    > 36 |     expect(result).toEqual({ code: 0, stdout: 'Updated ticket #1: status = open\n', stderr: '' });
+         |                    ^
+      37 |   });
+      38 |
+      39 |   it('T60: update 1 --status done → exit 2, liệt kê status hợp lệ, file không đổi', async () => {
+
+      at Object.<anonymous> (tests/integration/commands/update.test.ts:36:20)
+
+  ● tickets update › T60: update 1 --status done → exit 2, liệt kê status hợp lệ, file không đổi
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 2
+
+      Object {
+        "code": 2,
+    -   "stderr": "Error: invalid status \"done\". Allowed: open, in-progress, closed
+    +   "stderr": "error: unknown command 'update'
+    + (Did you mean create?)
+      ",
+        "stdout": "",
+      }
+
+      40 |     const result = await runCli(['update', '1', '--status', 'done'], { TICKETS_FILE: file });
+      41 |
+    > 42 |     expect(result).toEqual({
+         |                    ^
+      43 |       code: 2,
+      44 |       stdout: '',
+      45 |       stderr: 'Error: invalid status "done". Allowed: open, in-progress, closed\n',
+
+      at Object.<anonymous> (tests/integration/commands/update.test.ts:42:20)
+
+  ● tickets update › T61: update 1 thiếu --status → exit 2, file không đổi
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 2
+
+      Object {
+        "code": 2,
+    -   "stderr": "Error: --status is required
+    +   "stderr": "error: unknown command 'update'
+    + (Did you mean create?)
+      ",
+        "stdout": "",
+      }
+
+      51 |     const result = await runCli(['update', '1'], { TICKETS_FILE: file });
+      52 |
+    > 53 |     expect(result).toEqual({ code: 2, stdout: '', stderr: 'Error: --status is required\n' });
+         |                    ^
+      54 |     expect(readText(file)).toBe(seed);
+      55 |   });
+      56 |
+
+      at Object.<anonymous> (tests/integration/commands/update.test.ts:53:20)
+
+  ● tickets update › T62: update 99 --status closed → exit 1, ticket không tồn tại
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 3
+
+      Object {
+    -   "code": 1,
+    -   "stderr": "Error: ticket #99 not found
+    +   "code": 2,
+    +   "stderr": "error: unknown command 'update'
+    + (Did you mean create?)
+      ",
+        "stdout": "",
+      }
+
+      58 |     const result = await runCli(['update', '99', '--status', 'closed'], { TICKETS_FILE: file });
+      59 |
+    > 60 |     expect(result).toEqual({ code: 1, stdout: '', stderr: 'Error: ticket #99 not found\n' });
+         |                    ^
+      61 |     expect(readText(file)).toBe(seed);
+      62 |   });
+      63 | });
+
+      at Object.<anonymous> (tests/integration/commands/update.test.ts:60:20)
+
+PASS tests/integration/commands/show.test.ts
+PASS tests/integration/commands/create.test.ts
+PASS tests/integration/commands/list.test.ts
+PASS tests/integration/storage/json-file-repository.test.ts
+PASS tests/unit/services/ticket-service.test.ts
+PASS tests/unit/models/ticket.test.ts
+
+Test Suites: 1 failed, 6 passed, 7 total
+Tests:       5 failed, 70 passed, 75 total
+Snapshots:   0 total
+Time:        1.611 s, estimated 2 s
+Ran all test suites.
+Test results written to: ../jest.json
