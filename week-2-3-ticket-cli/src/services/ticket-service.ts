@@ -20,6 +20,12 @@ export interface ListFilter {
   tags?: string[];
 }
 
+function findOrThrow(tickets: Ticket[], id: number): Ticket {
+  const found = tickets.find((t) => t.id === id);
+  if (!found) throw new NotFoundError(`ticket #${id} not found`);
+  return found;
+}
+
 export class TicketService {
   constructor(private readonly repo: TicketRepository) {}
 
@@ -45,16 +51,12 @@ export class TicketService {
 
   async get(id: number): Promise<Ticket> {
     const tickets = await this.repo.load();
-    const found = tickets.find((t) => t.id === id);
-    if (!found) throw new NotFoundError(`ticket #${id} not found`);
-    return found;
+    return findOrThrow(tickets, id);
   }
 
   async updateStatus(id: number, status: string): Promise<Ticket> {
     const tickets = await this.repo.load();
-    const target = tickets.find((t) => t.id === id);
-    if (!target) throw new NotFoundError(`ticket #${id} not found`);
-    const updated: Ticket = { ...target, status: status as Status };
+    const updated: Ticket = { ...findOrThrow(tickets, id), status: status as Status };
     await this.repo.save(tickets.map((t) => (t.id === id ? updated : t)));
     return updated;
   }
