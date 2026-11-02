@@ -71,7 +71,7 @@ tickets update 1 --status closed
 | `1` | Không tìm thấy ticket, file JSON hỏng hoặc sai cấu trúc, lỗi đọc/ghi file |
 | `2` | Input sai: thiếu/sai title, status, priority, id; thiếu `--status`; lệnh hoặc option không tồn tại |
 
-Lỗi in ra stderr dạng `Error: ...`, không in stack trace. File JSON hỏng không bao giờ bị ghi đè.
+Lỗi in ra stderr dạng `Error: ...`, không in stack trace. Ngoại lệ: lỗi cú pháp do Commander phát hiện (lệnh hoặc option không tồn tại, thiếu giá trị option) giữ nguyên message gốc của Commander, ví dụ `error: unknown command 'fly'`, vẫn exit 2 (theo `docs/SPEC.md` mục 1). File JSON hỏng không bao giờ bị ghi đè.
 
 ### Kiến trúc
 
@@ -92,6 +92,12 @@ src/errors.ts                    ValidationError (exit 2), NotFoundError, Storag
 - `tests/integration/commands`: chạy `run()` trong cùng tiến trình; T41, T44, T54, T56, T63, T64 chạy tiến trình con thật (`node --import tsx src/cli.ts`) để kiểm exit code, stdout/stderr và việc không lộ stack trace.
 - Mỗi hành vi `Tn` trong `docs/SPEC.md` có commit `test(...) (red)` rồi `feat(...) (green)`; test xanh ngay khi viết được ghi `(passes immediately)`. Log đỏ nằm trong `evidence/`.
 - Quyết định thiết kế và lý do: `docs/DECISIONS.md`.
+- Quá trình dùng AI (Layered Questioning, Solution Exploration, T1 mình viết test, AI đề xuất Green, mình review; T2–T64 do AI agent, kiểm chứng): [`ai-usage/`](ai-usage/README.md).
+
+#### Ghi chú về lịch sử commit
+
+- **T1 không có commit đỏ riêng.** Test T1 được commit chung với phần dựng khung project trong `eca7fbe` (`docs(week-2): record design decisions and update spec`), trước commit xanh `013dddc`. Lịch sử giữ nguyên, không viết lại; log đỏ của T1 được tái tạo trên đúng cây file của `eca7fbe` (`evidence/T1-red.log`).
+- **Một số log đỏ là "thiếu module/hàm", chưa phải sai assertion:** T1, T10, T12, T13, T16, T25, T27, T32 và nhóm `create` (T41–T48). Đây là vòng đầu tiên của một module hoặc một hàm mới, nên test đỏ vì API chưa tồn tại. Ngay vòng kế tiếp trên cùng module, test đỏ vì expected ≠ received (ví dụ T14, T17, T26). Chế độ ts-jest chỉ biên dịch (`DECISIONS.md` #2) được chọn để phần lớn test đỏ vì hành vi thay vì cả file không biên dịch được.
 
 ## Tuần 3 — KB API
 Lệnh: `kb search "q" --top-k 3` · `kb list --node /templates/email --limit 10` · `kb retrieve doc-001` · `kb add --file x.md --path /templates/sms --tags sms`

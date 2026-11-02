@@ -20,7 +20,7 @@ Tài liệu đề bài nằm ở repo riêng: `../MindXOnboarding/docs/plans/`.
 
 ## Tiến độ
 - [x] Tuần 1 — TDD research
-- [ ] Tuần 2 — Ticket Manager CLI
+- [x] Tuần 2 — Ticket Manager CLI
 - [ ] Tuần 3 — KB API integration
 - [ ] Tuần 4 — 6 scenario
 - [ ] Tuần 5 — Analysis & automation
