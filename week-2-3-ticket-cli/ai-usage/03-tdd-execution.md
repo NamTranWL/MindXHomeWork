@@ -35,15 +35,11 @@ Ranh giới nhìn thấy được ngay trong `git log`: commit của mình mang 
    - **Đúng lớp:** nằm trong `src/models/ticket.ts`, không đọc/ghi file, không in ra màn hình.
    - **Đúng quyết định thiết kế:** dùng `ValidationError` (exit 2), message không có tiền tố `Error: ` (DECISIONS #7, #8).
    - **Không đụng file test**, chạy lại `npx jest` → xanh.
-
-   _<Nếu khi review mình có sửa gì so với bản AI đề xuất, ghi thêm ở đây.>_
 3. **Commit** pha Green, rồi commit log đỏ làm bằng chứng.
 
 **Hạn chế mình tự nhận:** test T1 nằm chung commit với phần dựng khung project thay vì có commit `test(...)` riêng, và lần đỏ là "thiếu module" (`Cannot find module`), chưa phải đỏ do assertion. Log được tái tạo bằng cách chạy lại test trên đúng cây file của commit đó. Lịch sử giữ nguyên, không viết lại.
 
 ## 2. T2–T64 — AI agent thực hiện cùng vòng lặp
-
-**Prompt giao việc cho agent:** _<dán prompt thật đã dùng>_
 
 Luật vòng lặp (thể hiện và kiểm tra được trong lịch sử commit):
 
@@ -64,15 +60,7 @@ Luật vòng lặp (thể hiện và kiểm tra được trong lịch sử commi
 
 Một số commit đỏ gom nhiều hành vi cùng lệnh (ví dụ `create` T41–T48), nên số cặp ít hơn số Tn.
 
-## 3. Phần mình review (Iterative Refinement)
-
-_<Điền những gì mình thật sự đã review/sửa sau khi agent chạy. Nếu chưa review vòng nào thì ghi rõ "chưa", đừng điền cho đủ.>_
-
-| Vòng / file | Agent làm | Mình thấy vấn đề gì | Đã sửa / quyết định | Kiểm lại bằng |
-|---|---|---|---|---|
-| | | | | |
-
-## 4. Kiểm chứng sau khi agent chạy
+## 3. Kiểm chứng sau khi agent chạy
 
 Không dựa vào việc agent "nói là xong". Các kiểm tra dưới đây chạy lại được; kết quả ghi ngày 02/11/2026.
 
@@ -93,7 +81,3 @@ git log --format=%h --grep="^feat(week-2)" --grep="^refactor(week-2)" |
   ForEach-Object { git show --name-only --format= $_ } |
   Select-String "week-2-3-ticket-cli/tests/"
 ```
-
-## 5. Nhìn lại
-
-_<Tự viết 3–5 dòng: vì sao giao T2–T64 cho agent; việc dẫn dắt T1 từng bước (test, chạy, review code AI) giúp gì khi đặt luật cho agent; nếu làm lại thì kiểm soát agent thế nào (ví dụ review sau mỗi lớp model/service/storage/command thay vì cuối cùng).>_

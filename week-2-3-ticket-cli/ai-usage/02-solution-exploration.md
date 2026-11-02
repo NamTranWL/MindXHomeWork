@@ -60,7 +60,7 @@ AI xếp theo **số file và số test phải sửa nếu đổi ý**:
 | **Test subprocess** | T63, T64, "không stack trace" | **T41, T44, T54, T56, T63, T64** | Phủ thêm đường thành công thật (T41) và các đường lỗi chính: thiếu title (T44), file hỏng (T54), không tìm thấy (T56) — kiểm exit code và stream thật ở mỗi loại lỗi |
 | Thư viện CLI, đường dẫn file, sinh ID, ghi file | như bảng SE-3 | Giữ như AI đề xuất | Trùng với spec đã chốt |
 
-_<Sử dụng Jest để chuân bị cho tuần sau>_
+- Sử dụng Jest để chuẩn bị cho tuần sau  
 
 ### Rủi ro AI nêu → đã thành quyết định hoặc test
 
