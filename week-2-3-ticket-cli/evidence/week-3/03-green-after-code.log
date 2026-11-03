@@ -1,0 +1,149 @@
+# Tuần 3 — sau khi code: toàn bộ suite (Phần A + Phần B)
+# 2026-11-03T11:41:47Z · npx jest --json (định dạng lại: một dòng mỗi test)
+
+PASS tests/integration/commands/create.test.ts
+  ✓ tickets create › T41: file chưa có → exit 0, in "Created ticket #1", file đúng 1 ticket (subprocess)
+  ✓ tickets create › T41b: --description (không trim) và --status được lưu đúng
+  ✓ tickets create › T42: --tags "LMS, login,lms" → lưu ["lms","login"]
+  ✓ tickets create › T43: --tags a,b --tags c → gộp thành ["a","b","c"]
+  ✓ tickets create › T44: thiếu title → exit 2, stderr "Error: --title is required", stdout rỗng, không tạo file (subprocess)
+  ✓ tickets create › T45: title chỉ có khoảng trắng → exit 2, file không đổi
+  ✓ tickets create › T46: --priority urgent → exit 2, file không đổi
+  ✓ tickets create › T47: file hỏng → exit 1, báo lỗi đọc file, file giữ nguyên
+  ✓ tickets create › T48: file 0 byte → exit 0, id = 1
+
+PASS tests/integration/commands/general.test.ts
+  ✓ tickets - hành vi chung (subprocess) › T63: lệnh không tồn tại hoặc option lạ → exit 2, báo lỗi ra stderr, stdout rỗng
+  ✓ tickets - hành vi chung (subprocess) › T64: create rồi list ở hai lần chạy riêng → dữ liệu còn
+
+PASS tests/integration/commands/kb.test.ts
+  ✓ kb search › T86: in kết quả theo thứ tự xếp hạng, cắt theo --top-k; không có kết quả thì báo rõ
+  ✓ kb search › T87: query rỗng hoặc --top-k sai → exit 2, stdout rỗng
+  ✓ kb list › T88: liệt kê tài liệu của node kèm tags; thiếu hoặc sai --node → exit 2
+  ✓ kb retrieve › T89: in 4 dòng thông tin, dòng trống, rồi nội dung; id không có → exit 1
+  ✓ kb add › T90: thêm tài liệu từ file; file không có → 1; file rỗng → 2; trùng title → 1
+  ✓ kb - chọn client qua biến môi trường › T91: KB_CLIENT sai → exit 2; nhưng input sai vẫn được báo trước lỗi cấu hình
+  ✓ kb - chọn client qua biến môi trường › T92: KB_CLIENT=http + KB server local cho cùng output với mock; server không chạy → exit 1
+  ✓ kb - các hành vi khác › T93: lệnh kb không tạo tickets.json
+  ✓ kb - các hành vi khác › T94: seed mặc định đủ cho ví dụ của đề — tra thông tin team và tra template email
+
+PASS tests/integration/commands/list.test.ts
+  ✓ tickets list › T49: có dữ liệu → in mỗi ticket một dòng theo id tăng dần, exit 0
+  ✓ tickets list › T50: file chưa tồn tại → exit 0, báo rỗng, không tạo file
+  ✓ tickets list › T51: --status open --priority high → chỉ in ticket khớp
+  ✓ tickets list › T52: --tags lms,login → AND; --tags LMS khớp tag "lms"
+  ✓ tickets list › T53: --status done → exit 2
+  ✓ tickets list › T54: file hỏng → exit 1, stderr "Error: cannot read <file> (invalid JSON)", file giữ nguyên (subprocess)
+
+PASS tests/integration/commands/show.test.ts
+  ✓ tickets show › T55: show 1 → in đủ 6 field, exit 0; field rỗng in "-"
+  ✓ tickets show › T56: show 99 → exit 1, stderr "Error: ticket #99 not found", không có stack trace (subprocess)
+  ✓ tickets show › T57: show abc → exit 2
+  ✓ tickets show › T57: show 0 → exit 2
+
+PASS tests/integration/commands/update.test.ts
+  ✓ tickets update › T58: update 1 --status closed → exit 0, file được cập nhật
+  ✓ tickets update › T59: update 1 --status open khi đang open → exit 0
+  ✓ tickets update › T60: update 1 --status done → exit 2, liệt kê status hợp lệ, file không đổi
+  ✓ tickets update › T61: update 1 thiếu --status → exit 2, file không đổi
+  ✓ tickets update › T62: update 99 --status closed → exit 1, ticket không tồn tại
+
+PASS tests/integration/kb/kb-client.contract.test.ts
+  ✓ KBClient contract — MockKBClient › T75: search "login" → title trước tag, cùng điểm thì theo id
+  ✓ KBClient contract — MockKBClient › T76: search bỏ dấu, không phân biệt hoa thường, cắt theo topK, không khớp thì rỗng
+  ✓ KBClient contract — MockKBClient › T77: list đúng node, đệ quy khi có recursive, sắp theo id và cắt limit
+  ✓ KBClient contract — MockKBClient › T78: tài liệu ở /templates-old không bị coi là con của /templates
+  ✓ KBClient contract — MockKBClient › T79: retrieve trả đủ 5 trường; id không có → NotFoundError
+  ✓ KBClient contract — MockKBClient › T80: add sinh doc-005, retrieve lại ra đúng dữ liệu, fixture gốc không đổi
+  ✓ KBClient contract — MockKBClient › T81: trùng title (sau normalize) trong cùng node → ConflictError; khác node thì được
+  ✓ KBClient contract — HTTPKBClient + KB server local › T75: search "login" → title trước tag, cùng điểm thì theo id
+  ✓ KBClient contract — HTTPKBClient + KB server local › T76: search bỏ dấu, không phân biệt hoa thường, cắt theo topK, không khớp thì rỗng
+  ✓ KBClient contract — HTTPKBClient + KB server local › T77: list đúng node, đệ quy khi có recursive, sắp theo id và cắt limit
+  ✓ KBClient contract — HTTPKBClient + KB server local › T78: tài liệu ở /templates-old không bị coi là con của /templates
+  ✓ KBClient contract — HTTPKBClient + KB server local › T79: retrieve trả đủ 5 trường; id không có → NotFoundError
+  ✓ KBClient contract — HTTPKBClient + KB server local › T80: add sinh doc-005, retrieve lại ra đúng dữ liệu, fixture gốc không đổi
+  ✓ KBClient contract — HTTPKBClient + KB server local › T81: trùng title (sau normalize) trong cùng node → ConflictError; khác node thì được
+
+PASS tests/integration/kb/kb-server.test.ts
+  ✓ KB server local › T85: body không phải JSON hoặc sai kiểu → 400; endpoint lạ hoặc không phải POST → 404; luôn có trường error
+
+PASS tests/integration/storage/json-file-repository.test.ts
+  ✓ JsonFileRepository (file thật trong thư mục tạm) › T32: file không tồn tại → đọc ra []
+  ✓ JsonFileRepository (file thật trong thư mục tạm) › T33: file 0 byte → []
+  ✓ JsonFileRepository (file thật trong thư mục tạm) › T34: file chỉ có khoảng trắng / xuống dòng → []
+  ✓ JsonFileRepository (file thật trong thư mục tạm) › T35: file có BOM UTF-8 và JSON hợp lệ → đọc bình thường
+  ✓ JsonFileRepository (file thật trong thư mục tạm) › T36: nội dung không phải JSON → StorageError, file giữ nguyên nội dung
+  ✓ JsonFileRepository (file thật trong thư mục tạm) › T37: JSON hợp lệ nhưng không phải mảng ({}) → StorageError, file giữ nguyên
+  ✓ JsonFileRepository (file thật trong thư mục tạm) › T38: ghi rồi đọc lại → cùng dữ liệu (round-trip)
+  ✓ JsonFileRepository (file thật trong thư mục tạm) › T39: sau khi ghi, thư mục không còn file tạm
+  ✓ JsonFileRepository (file thật trong thư mục tạm) › T39a: rename lỗi EPERM 2 lần rồi thành công → ghi thành công
+  ✓ JsonFileRepository (file thật trong thư mục tạm) › T39b: rename lỗi mãi → StorageError, file gốc giữ nguyên, không còn file tạm
+  ✓ JsonFileRepository (file thật trong thư mục tạm) › T40: ghi khi thư mục cha chưa tồn tại → tự tạo thư mục, ghi thành công
+
+PASS tests/unit/kb/config.test.ts
+  ✓ parseKBConfig › T70: mặc định mock + http://localhost:4000; KB_CLIENT phân biệt hoa thường; KB_API_URL phải là http(s) và bỏ / cuối
+
+PASS tests/unit/kb/http-kb-client.test.ts
+  ✓ HTTPKBClient › T82: gửi POST <baseUrl><endpoint>, header JSON, body đúng contract cho cả 4 thao tác
+  ✓ HTTPKBClient › T83: 400 → ValidationError với message từ body; 500 → KBApiError
+  ✓ HTTPKBClient › T84: lỗi mạng → KBApiError có mã lỗi; 2xx nhưng body sai dạng → KBApiError unexpected response
+
+PASS tests/unit/models/kb.test.ts
+  ✓ KB model - chuẩn hoá › T65: normalize bỏ khoảng trắng hai đầu, về chữ thường, bỏ dấu và đổi đ thành d
+  ✓ KB model - chuẩn hoá › T66: normalizeNodePath gộp //, bỏ / cuối, trim; giữ / gốc và giữ hoa thường
+  ✓ KB model - chuẩn hoá › T67: normalizeNodePath rỗng hoặc không bắt đầu bằng / → ValidationError
+  ✓ KB model - parsePositiveInt › T68: mặc định khi không truyền, nhận số nguyên trong khoảng, báo lỗi đúng message khi sai
+  ✓ KB model - resolveTitle › T69: --title thắng heading; không có thì lấy dòng "# ..." đầu tiên; không có heading thì lấy tên file bỏ đuôi
+
+PASS tests/unit/models/ticket.test.ts
+  ✓ parseNewTicket - validate và chuẩn hoá input tạo ticket › T1: thiếu title → ValidationError "--title is required"
+  ✓ parseNewTicket - validate và chuẩn hoá input tạo ticket › T2: title chỉ có khoảng trắng → ValidationError như T1
+  ✓ parseNewTicket - validate và chuẩn hoá input tạo ticket › T3: title được trim hai đầu
+  ✓ parseNewTicket - validate và chuẩn hoá input tạo ticket › T4: không truyền status → "open"
+  ✓ parseNewTicket - validate và chuẩn hoá input tạo ticket › T5: status ngoài open | in-progress | closed → ValidationError liệt kê giá trị hợp lệ
+  ✓ parseNewTicket - validate và chuẩn hoá input tạo ticket › T5b: status hợp lệ (in-progress) được giữ nguyên
+  ✓ parseNewTicket - validate và chuẩn hoá input tạo ticket › T6: không truyền priority → "medium"
+  ✓ parseNewTicket - validate và chuẩn hoá input tạo ticket › T7: priority ngoài low | medium | high → ValidationError
+  ✓ parseNewTicket - validate và chuẩn hoá input tạo ticket › T7b: priority hợp lệ (high) được giữ nguyên
+  ✓ parseNewTicket - validate và chuẩn hoá input tạo ticket › T8: không truyền description → ""
+  ✓ parseNewTicket - validate và chuẩn hoá input tạo ticket › T8b: có description → giữ nguyên, không trim
+  ✓ parseNewTicket - validate và chuẩn hoá input tạo ticket › T9: không truyền tags → []
+  ✓ normalizeTags - chuẩn hoá danh sách tag › T10: trim, lowercase, bỏ rỗng, bỏ trùng, giữ thứ tự xuất hiện đầu tiên
+  ✓ normalizeTags - chuẩn hoá danh sách tag › T11: tách chuỗi theo dấu phẩy: "a, B,a" → ["a","b"]
+  ✓ parseTicketId - validate id nhập từ dòng lệnh › T12: số nguyên dương → trả về number
+  ✓ parseTicketId - validate id nhập từ dòng lệnh › T12: "abc" → ValidationError
+  ✓ parseTicketId - validate id nhập từ dòng lệnh › T12: "0" → ValidationError
+  ✓ parseTicketId - validate id nhập từ dòng lệnh › T12: "-1" → ValidationError
+  ✓ parseTicketId - validate id nhập từ dòng lệnh › T12: "1.5" → ValidationError
+  ✓ parseTicketId - validate id nhập từ dòng lệnh › T12: "01" → ValidationError
+
+PASS tests/unit/services/kb-service.test.ts
+  ✓ KBService.search › T71: query rỗng → ValidationError, không tạo client; hợp lệ → query đã trim, topK mặc định 5
+  ✓ KBService.list › T72: thiếu node → lỗi, không tạo client; hợp lệ → node đã chuẩn hoá, limit 10, recursive false
+  ✓ KBService.retrieve › T73: id rỗng → lỗi, không tạo client; hợp lệ → id đã trim
+  ✓ KBService.add › T74: thiếu --file/--path, file không có, file rỗng → lỗi và không tạo client; hợp lệ → dữ liệu đã chuẩn hoá
+
+PASS tests/unit/services/ticket-service.test.ts
+  ✓ TicketService.create › T13: danh sách rỗng → id = 1, ticket đủ 6 field và được lưu
+  ✓ TicketService.create › T14: đã có ticket → id = max(id) + 1
+  ✓ TicketService.create › T15: input không hợp lệ → ValidationError, không đọc và không ghi
+  ✓ TicketService.list › T16: không filter → tất cả ticket, theo id tăng dần
+  ✓ TicketService.list › T17: lọc theo status
+  ✓ TicketService.list › T18: lọc theo priority
+  ✓ TicketService.list › T19: lọc kết hợp status + priority (AND)
+  ✓ TicketService.list › T20: lọc theo một tag
+  ✓ TicketService.list › T21: nhiều tag theo AND → ticket thiếu một tag bị loại
+  ✓ TicketService.list › T22: filter tag được chuẩn hoá trước khi so ("LMS" khớp "lms")
+  ✓ TicketService.list › T23: không ticket nào khớp → []
+  ✓ TicketService.list › T24: filter {"status": "done"} không hợp lệ → ValidationError
+  ✓ TicketService.list › T24: filter {"priority": "urgent"} không hợp lệ → ValidationError
+  ✓ TicketService.get › T25: id tồn tại → trả đúng ticket
+  ✓ TicketService.get › T26: id không tồn tại → NotFoundError "ticket #99 not found"
+  ✓ TicketService.updateStatus › T27: thành công → trả ticket đã cập nhật và lưu lại
+  ✓ TicketService.updateStatus › T28: đổi sang đúng status hiện tại → vẫn thành công
+  ✓ TicketService.updateStatus › T29: id không tồn tại → NotFoundError, không ghi
+  ✓ TicketService.updateStatus › T30: status không hợp lệ → ValidationError, không ghi
+  ✓ TicketService.updateStatus › T31: chỉ đổi ticket đích; ticket khác giữ nguyên
+
+Test Suites: 15 passed, 15 total
+Tests:       114 passed, 0 failed, 114 total

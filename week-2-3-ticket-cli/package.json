@@ -1,7 +1,7 @@
 {
   "name": "week2-ticket-cli",
   "private": true,
-  "description": "Ticket Manager CLI - TDD practice (week 2)",
+  "description": "Ticket Manager CLI + KB commands - TDD practice (week 2-3)",
   "bin": {
     "tickets": "dist/cli.js"
   },
@@ -12,7 +12,8 @@
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "build": "tsc -p tsconfig.build.json",
-    "tickets": "tsx src/cli.ts"
+    "tickets": "tsx src/cli.ts",
+    "kb-server": "tsx src/kb-server.ts"
   },
   "devDependencies": {
     "@types/jest": "30.0.0",

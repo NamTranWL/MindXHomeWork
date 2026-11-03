@@ -1,0 +1,100 @@
+# T95 — 4 lệnh kb qua HTTP tới KB server local (dữ liệu seed)
+# Terminal 1: $env:KB_PORT='4123'; npm run kb-server
+#   KB server listening on http://localhost:4123 (13 documents)
+#   Dữ liệu nằm trong bộ nhớ; tắt server (Ctrl+C) thì quay về seed.
+# Terminal 2: $env:KB_CLIENT='http'; $env:KB_API_URL='http://localhost:4123'; rồi chạy các lệnh dưới bằng npm run tickets -- <lệnh>
+
+## 1. Tra template email cho Scenario 1 (Login Issue)
+
+> tickets kb search đăng nhập --top-k 3
+doc-012 /runbooks/login Runbook: Xử lý lỗi đăng nhập LMS (match: title)
+doc-001 /templates/email Email ACK – Login issue (match: content)
+doc-002 /templates/email Email resolution – Đã reset mật khẩu (match: content)
+[exit 0]
+
+> tickets kb retrieve doc-001
+ID: doc-001
+Title: Email ACK – Login issue
+Node: /templates/email
+Tags: login, ack, lms
+
+Subject: RE: Không thể đăng nhập vào LMS - Ticket #{ticketId}
+
+Chào {name},
+
+Cảm ơn bạn đã liên hệ. Team đã ghi nhận vấn đề không thể đăng nhập vào hệ thống LMS.
+Team đang kiểm tra tài khoản của bạn và sẽ cập nhật lại trước {nextUpdate}.
+
+Trong lúc chờ, bạn vui lòng thử:
+- Đăng nhập bằng chế độ ẩn danh (Incognito)
+- Kiểm tra đúng địa chỉ lms.mindx.edu.vn
+
+Trân trọng,
+MindX Support Team
+[exit 0]
+
+## 2. Tra thông tin team
+
+> tickets kb search on-call
+doc-008 /team/devops DevOps – Lịch on-call (match: title)
+[exit 0]
+
+> tickets kb list --node /team --recursive
+doc-007 /team/devops DevOps – Thành viên và kênh liên hệ (tags: team, devops, contact)
+doc-008 /team/devops DevOps – Lịch on-call (tags: team, devops, on-call, schedule)
+doc-009 /team/support Support – Ca trực và bàn giao (tags: team, support, schedule)
+[exit 0]
+
+> tickets kb retrieve doc-008
+ID: doc-008
+Title: DevOps – Lịch on-call
+Node: /team/devops
+Tags: team, devops, on-call, schedule
+
+# DevOps – Lịch on-call
+
+- Thứ 2 – Thứ 6, 08:30–18:00: trực chính là SRE, dự phòng là DevOps Lead.
+- Ngoài giờ và cuối tuần: xoay vòng theo tuần, xem ghim trong kênh #devops-oncall.
+- Sự cố Expedite: gọi người on-call ngay, không chờ trả lời tin nhắn.
+[exit 0]
+
+## 3. Thêm template SMS, retrieve lại ở lần chạy CLI khác (server còn giữ dữ liệu)
+
+> tickets kb add --file evidence/week-3/sms-nhac-hoc-bu.md --path /templates/sms --tags sms,schedule
+Added document doc-014 at /templates/sms
+[exit 0]
+
+> tickets kb list --node /templates/sms
+doc-005 /templates/sms SMS – Thông báo bảo trì hệ thống (tags: sms, maintenance)
+doc-014 /templates/sms SMS – Nhắc lịch học bù (tags: sms, schedule)
+[exit 0]
+
+> tickets kb retrieve doc-014
+ID: doc-014
+Title: SMS – Nhắc lịch học bù
+Node: /templates/sms
+Tags: sms, schedule
+
+# SMS – Nhắc lịch học bù
+[MindX] Lớp {className} học bù vào {time} ngày {date}. Vui lòng có mặt đúng giờ.
+[exit 0]
+
+## 4. Các đường lỗi
+
+> tickets kb add --file evidence/week-3/sms-nhac-hoc-bu.md --path /templates/sms
+Error: document "SMS – Nhắc lịch học bù" already exists at /templates/sms (doc-014)
+[exit 1]
+
+> tickets kb retrieve doc-999
+Error: document doc-999 not found
+[exit 1]
+
+> tickets kb list --node templates
+Error: invalid node path "templates". Expected a path starting with "/"
+[exit 2]
+
+## 5. Tắt server (Ctrl+C) rồi gọi lại
+
+> tickets kb search login
+Error: cannot reach KB API at http://localhost:4123 (ECONNREFUSED)
+[exit 1]
