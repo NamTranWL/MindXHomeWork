@@ -1,0 +1,122 @@
+# Tuần 3 — test viết trước theo SPEC Phần B (T65–T94), chưa có code
+# 2026-11-03T11:35:07Z · npx jest <các file test kb>
+
+FAIL tests/integration/commands/kb.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../src/kb/mock-kb-client' from 'tests/integration/commands/kb.test.ts'
+
+      2 | import { writeFile } from 'node:fs/promises';
+      3 | import { run, type RunDeps } from '../../../src/commands/run';
+    > 4 | import { MockKBClient } from '../../../src/kb/mock-kb-client';
+        | ^
+      5 | import { KB_FIXTURE } from '../../fixtures/kb-documents';
+      6 | import { existsSync, makeTempDir, removeDir, type CliResult } from '../../helpers/cli';
+      7 | import { startKBServer } from '../../helpers/kb';
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.<anonymous> (tests/integration/commands/kb.test.ts:4:1)
+
+FAIL tests/integration/kb/kb-client.contract.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../src/kb/http-kb-client' from 'tests/integration/kb/kb-client.contract.test.ts'
+
+      1 | import { ConflictError, NotFoundError } from '../../../src/errors';
+      2 | import type { KBClient } from '../../../src/kb/kb-client';
+    > 3 | import { HTTPKBClient } from '../../../src/kb/http-kb-client';
+        | ^
+      4 | import { MockKBClient } from '../../../src/kb/mock-kb-client';
+      5 | import type { Document } from '../../../src/models/kb';
+      6 | import { KB_FIXTURE } from '../../fixtures/kb-documents';
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.<anonymous> (tests/integration/kb/kb-client.contract.test.ts:3:1)
+
+FAIL tests/unit/services/kb-service.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../src/services/kb-service' from 'tests/unit/services/kb-service.test.ts'
+
+      2 | import { writeFile } from 'node:fs/promises';
+      3 | import { StorageError, ValidationError } from '../../../src/errors';
+    > 4 | import { KBService } from '../../../src/services/kb-service';
+        | ^
+      5 | import { expectError, RecordingKBClient } from '../../helpers/kb';
+      6 | import { makeTempDir, removeDir } from '../../helpers/cli';
+      7 |
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.<anonymous> (tests/unit/services/kb-service.test.ts:4:1)
+
+FAIL tests/unit/kb/http-kb-client.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../src/kb/http-kb-client' from 'tests/unit/kb/http-kb-client.test.ts'
+
+      1 | import { KBApiError, ValidationError } from '../../../src/errors';
+    > 2 | import { HTTPKBClient } from '../../../src/kb/http-kb-client';
+        | ^
+      3 | import { expectError } from '../../helpers/kb';
+      4 |
+      5 | const BASE = 'http://kb.test';
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.<anonymous> (tests/unit/kb/http-kb-client.test.ts:2:1)
+
+FAIL tests/unit/models/kb.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../src/models/kb' from 'tests/unit/models/kb.test.ts'
+
+      1 | import { ValidationError } from '../../../src/errors';
+    > 2 | import { normalize, normalizeNodePath, parsePositiveInt, resolveTitle } from '../../../src/models/kb';
+        | ^
+      3 | import { expectError } from '../../helpers/kb';
+      4 |
+      5 | describe('KB model - chuẩn hoá', () => {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.<anonymous> (tests/unit/models/kb.test.ts:2:1)
+
+FAIL tests/integration/kb/kb-server.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../src/kb/mock-kb-client' from 'tests/helpers/kb.ts'
+
+    Require stack:
+      tests/helpers/kb.ts
+      tests/integration/kb/kb-server.test.ts
+
+      2 | import type { Document, KBQuery, ListQuery, NewDocument, SearchResult } from '../../src/models/kb';
+      3 | import type { KBClient } from '../../src/kb/kb-client';
+    > 4 | import { MockKBClient } from '../../src/kb/mock-kb-client';
+        | ^
+      5 | import { createKBServer } from '../../src/kb/server';
+      6 | import { KB_FIXTURE } from '../fixtures/kb-documents';
+      7 |
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.<anonymous> (tests/helpers/kb.ts:4:1)
+      at Object.<anonymous> (tests/integration/kb/kb-server.test.ts:1:1)
+
+FAIL tests/unit/kb/config.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../src/kb/config' from 'tests/unit/kb/config.test.ts'
+
+      1 | import { ValidationError } from '../../../src/errors';
+    > 2 | import { parseKBConfig } from '../../../src/kb/config';
+        | ^
+      3 | import { expectError } from '../../helpers/kb';
+      4 |
+      5 | describe('parseKBConfig', () => {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.<anonymous> (tests/unit/kb/config.test.ts:2:1)
+
+Test Suites: 7 failed, 7 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        1.319 s
+Ran all test suites matching tests/unit/models/kb.test.ts|tests/unit/kb|tests/unit/services/kb-service.test.ts|tests/integration/kb|tests/integration/commands/kb.test.ts.
