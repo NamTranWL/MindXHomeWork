@@ -262,3 +262,91 @@ Thứ tự field trong file không quan trọng.
 - Không có `createdAt`/`updatedAt`.
 - Không xử lý hai lệnh ghi chạy đồng thời trên cùng file: lần ghi sau có thể đè mất thay đổi của lần trước.
 - Id được tính bằng `max(id) + 1`, nên nếu sau này có lệnh xoá thì id lớn nhất có thể bị dùng lại.
+
+## 12. Knowledge Base: lệnh `tickets kb` (tuần 3)
+
+Nhóm lệnh `kb` tra cứu Knowledge Base: template email/SMS/Teams, thông tin team, hướng dẫn và runbook. Lệnh `kb` không đọc hay ghi `tickets.json`. Hành vi chi tiết: `docs/SPEC.md` Phần B.
+
+### 12.1 Chọn nguồn dữ liệu
+
+| Biến môi trường | Giá trị | Mặc định | Ý nghĩa |
+|---|---|---|---|
+| `KB_CLIENT` | `mock` hoặc `http` (chữ thường) | `mock` | `mock`: dữ liệu seed trong bộ nhớ của lần chạy CLI. `http`: gọi KB server |
+| `KB_API_URL` | URL `http://` hoặc `https://` | `http://localhost:4000` | Địa chỉ KB server khi `KB_CLIENT=http` |
+| `KB_PORT` | số cổng | `4000` | Cổng mà `npm run kb-server` lắng nghe |
+
+**Dùng mock (khi dev, không cần mạng):** không cần đặt gì. Mỗi lần chạy CLI bắt đầu lại từ 13 tài liệu seed, nên tài liệu thêm bằng `kb add` mất ngay sau lệnh đó.
+
+**Dùng HTTP với KB server chạy trên máy:**
+
+```powershell
+# Terminal 1
+npm run kb-server
+# KB server listening on http://localhost:4000 (13 documents)
+
+# Terminal 2
+$env:KB_CLIENT = "http"
+npm run tickets -- kb search login
+```
+
+KB server giữ dữ liệu trong bộ nhớ cho tới khi tắt (Ctrl+C), nên `kb add` rồi `kb retrieve` ở hai lần chạy CLI khác nhau vẫn thấy tài liệu mới. Khởi động lại server thì quay về seed. Đổi cổng: `$env:KB_PORT = "4123"` ở terminal 1 và `$env:KB_API_URL = "http://localhost:4123"` ở terminal 2. Quay lại mock: `Remove-Item Env:KB_CLIENT`.
+
+### 12.2 `tickets kb search <query> [--top-k n]`
+
+Tìm từ khoá trong title, tags và content. Không phân biệt hoa thường và không phân biệt dấu (`dang nhap` khớp `đăng nhập`). Kết quả xếp theo trường khớp: title trước tag, tag trước content; cùng mức thì theo id. `--top-k` từ 1 đến 50, mặc định 5.
+
+```powershell
+npm run tickets -- kb search "đăng nhập" --top-k 3
+# doc-012 /runbooks/login Runbook: Xử lý lỗi đăng nhập LMS (match: title)
+# doc-001 /templates/email Email ACK – Login issue (match: content)
+# doc-002 /templates/email Email resolution – Đã reset mật khẩu (match: content)
+```
+
+### 12.3 `tickets kb list --node <path> [--limit n] [--recursive]`
+
+Liệt kê tài liệu trong một node, theo id tăng dần. Mặc định chỉ lấy đúng node đó; thêm `--recursive` để lấy cả node con. `/templates/email/` và `/templates//email` được hiểu là `/templates/email`; hoa thường được giữ nguyên. `--limit` từ 1 đến 100, mặc định 10. Xem toàn bộ KB: `kb list --node / --recursive --limit 100`.
+
+```powershell
+npm run tickets -- kb list --node /team --recursive
+# doc-007 /team/devops DevOps – Thành viên và kênh liên hệ (tags: team, devops, contact)
+# doc-008 /team/devops DevOps – Lịch on-call (tags: team, devops, on-call, schedule)
+# doc-009 /team/support Support – Ca trực và bàn giao (tags: team, support, schedule)
+```
+
+### 12.4 `tickets kb retrieve <id>`
+
+In 4 dòng thông tin (`ID`, `Title`, `Node`, `Tags`), một dòng trống, rồi toàn bộ nội dung.
+
+### 12.5 `tickets kb add --file <file> --path <node> [--title <title>] [--tags <tags>]`
+
+Thêm tài liệu từ một file markdown (UTF-8, có hay không có BOM đều được). Title lấy theo thứ tự: `--title`, dòng `# ...` đầu tiên trong file, tên file bỏ đuôi. Không được trùng title (không phân biệt hoa thường và dấu) trong cùng node. `--tags` theo đúng quy tắc tag ở mục 5.
+
+```powershell
+npm run tickets -- kb add --file evidence/week-3/sms-nhac-hoc-bu.md --path /templates/sms --tags sms,schedule
+# Added document doc-014 at /templates/sms
+```
+
+### 12.6 Dữ liệu seed
+
+| Node | Tài liệu |
+|---|---|
+| `/templates/email` | doc-001 ACK login · doc-002 resolution reset mật khẩu · doc-003 ACK sự cố Priority · doc-004 follow-up |
+| `/templates/sms` | doc-005 thông báo bảo trì |
+| `/templates/teams` | doc-006 escalation cho dev team |
+| `/team/devops` | doc-007 thành viên và kênh liên hệ · doc-008 lịch on-call |
+| `/team/support` | doc-009 ca trực và bàn giao |
+| `/docs/guides` | doc-010 phân loại Class of Service · doc-011 quy trình 7 bước |
+| `/runbooks/login`, `/runbooks/performance` | doc-012 lỗi đăng nhập LMS · doc-013 Denise tải chậm |
+
+Nội dung là dữ liệu mẫu, không có tên hay email người thật. Sửa seed ở `src/kb/seed.ts`.
+
+### 12.7 Lỗi thường gặp
+
+| Message | Exit | Cách xử lý |
+|---|---|---|
+| `query is required`, `--node is required`, `invalid node path ...`, `invalid --top-k ...`, `invalid --limit ...` | 2 | Sửa lại input theo mục tương ứng ở trên |
+| `document <id> not found` | 1 | Kiểm tra id bằng `kb search` hoặc `kb list` |
+| `document "<title>" already exists at <node> (<id>)` | 1 | Đổi title (`--title`) hoặc thêm vào node khác |
+| `cannot read <file> (ENOENT)` / `file <file> is empty` | 1 / 2 | Kiểm tra đường dẫn và nội dung file |
+| `invalid KB_CLIENT "<value>". Allowed: mock, http` | 2 | Đặt `KB_CLIENT` là `mock` hoặc `http` (chữ thường) |
+| `cannot reach KB API at <url> (ECONNREFUSED)` | 1 | Chưa bật KB server hoặc sai cổng: chạy `npm run kb-server`, kiểm tra `KB_API_URL` |
